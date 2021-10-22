@@ -1,0 +1,10 @@
+body {
+    color: #fff;
+    background-color: #333;
+    margin: unset;
+}
+
+textarea#Editor {
+    background-color: inherit;
+    margin: 10px;
+}

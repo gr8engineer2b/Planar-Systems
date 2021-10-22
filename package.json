@@ -1,0 +1,26 @@
+{
+  "name": "planar-systems",
+  "version": "1.0.0",
+  "description": "A tool for d&d world creation",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "dev": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gr8engineer2b/Planar-Systems.git"
+  },
+  "author": "Tristan Tyler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gr8engineer2b/Planar-Systems/issues"
+  },
+  "homepage": "https://github.com/gr8engineer2b/Planar-Systems#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
+}
