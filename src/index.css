@@ -1,0 +1,38 @@
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  padding: 2rem;
+  font-size: large;
+}
+
+.previewpane {
+  background-color: rgb(164, 179, 212);
+  text-align: center;
+}
+
+#mui-rte-editor-container > div {
+  padding: 20px;
+}
+
+#mui-rte-editor {
+  background-color: rgb(165, 207, 216);
+}
+
+#mui-rte-container > div {
+  min-height: 10vh;
+}
+
+.characterframe {
+  padding: 10px;
+}
+
+div[role="tabpanel"] {
+  background-color: rgb(163, 163, 163);
+}
+
+div[role="tabpanel"],
+#mui-rte-editor,
+.previewpane {
+  border-radius: 10px;
+}
