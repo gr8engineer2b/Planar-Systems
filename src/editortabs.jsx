@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Editor from "./editor.jsx";
-import { Typography, Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab, Box } from "@mui/material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

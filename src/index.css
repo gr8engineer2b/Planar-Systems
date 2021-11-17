@@ -19,7 +19,7 @@ html {
   background-color: rgb(165, 207, 216);
 }
 
-#mui-rte-container > div {
+.mui-rte-editor {
   min-height: 10vh;
 }
 
