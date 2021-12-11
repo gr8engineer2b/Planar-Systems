@@ -4,6 +4,7 @@ D&D World Creation Tool
 
 For facilitating the creation of richer long form campaigns
 
+npm build will generate a setup file
 
 V1.0.0 Run the Setup file (Windows only at the moment)
 
