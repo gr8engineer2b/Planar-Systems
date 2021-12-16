@@ -22,7 +22,11 @@ const myTheme = createTheme({
   },
 });
 
-const workingDirectory = "C:/Paired-Planes";
+
+const workingDirectory = "C:/Users/eldar/AppData/Roaming/planar-systems/Test";
+(async () => {
+  await window.editorfile.createDir(workingDirectory);
+})()
 // const workingDirectory = "C:/Users/gr8en/Appdata/Roaming/planar-systems/Test";
 
 ReactDOM.render(

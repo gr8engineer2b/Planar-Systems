@@ -63,6 +63,12 @@ const removeFile = async (workingdir, filepath) => {
   }
 };
 
+const createDir = async (dir) => {
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+};
+
 ipcMain.handle("readFile", (e, [workingdir, filepath]) => {
   return readFile(workingdir, filepath);
 });
@@ -78,6 +84,10 @@ ipcMain.on("writeFile", (e, [workingdir, filepath, data]) => {
 ipcMain.handle("removeFile", (e, [workingdir, filepath]) => {
   return removeFile(workingdir, filepath);
 });
+
+ipcMain.handle("createDir", (e, dir) => {
+  return createDir(dir);
+})
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({

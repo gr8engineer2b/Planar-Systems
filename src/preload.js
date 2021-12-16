@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld("editorfile", {
     ipcRenderer.send("writeFile", [workingdir, filename, data]),
   removefile: (workingdir, filename) =>
     ipcRenderer.invoke("removeFile", [workingdir, filename]),
+  createDir: (dir) => ipcRenderer.invoke("createDir", dir)
 });
