@@ -1,42 +1,111 @@
+import { Paper, Box, Switch, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Character from "./character.jsx";
+import Item from "./item.jsx";
 
 const Preview = (props) => {
-  const [characters, setCharacters] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [checked, setChecked] = React.useState(false);
 
+  // props.updateEditorError() without args is used to set the error to undefined, causing nothing to be displayed
   useEffect(() => {
     //checking for null
     if (props.data) {
       try {
         const json = JSON.parse(props.data);
-        if (json.type === "character") {
-          //if there is a change to be made
-          if (JSON.stringify(characters) !== JSON.stringify(json.data)) {
-            setCharacters([...json.data.map((character) => character)]);
+        //if there is a change to be made
+        if (Array.isArray(json)) {
+          if (JSON.stringify(previews) !== JSON.stringify(json)) {
+            setPreviews([...json.map((obj) => obj)]);
           }
-        } else {
-          console.log("unkown type, cannot handle component");
+        } else if (json.constructor === Object) {
+          if (JSON.stringify(previews) !== JSON.stringify([json])) {
+            setPreviews([json]);
+          }
         }
+        props.updateEditorError();
       } catch (err) {
-        console.log(
+        props.updateEditorError(
           "Please remedy your JSON error in " + props.filename + ":\n" + err
         );
       }
-    }
+    } else props.updateEditorError();
   });
 
+  const boxsx = {
+    padding: 1,
+    display: "inline-block",
+    verticalAlign: "top",
+  };
+
+  const handlePreviewCheck = (event) => {
+    setChecked(event.target.checked);
+  };
+
   return (
-    <div className="previewpane">
-      <h3>Preview</h3>
-      <div className="characterframe">
-        {characters !== [] ? (
-          characters.map((character) => (
-            <Character key={character.name} character={character} />
-          ))
+    <div>
+      <Switch
+        color="secondary"
+        disabled={previews.length === 0}
+        onChange={handlePreviewCheck}
+        sx={{ float: "right" }}
+      />
+      <Box
+        sx={{
+          maxHeight: "20vh",
+          overflowY: "auto",
+          padding: "5px 5px 5px 58px",
+          margin: "2px",
+          borderRadius: 1,
+        }}
+      >
+        {previews.length > 0 ? (
+          <Typography textAlign="center">Preview</Typography>
         ) : (
-          <p>No Characters to Display</p>
+          <Typography textAlign="center" color="text.disabled">
+            Nothing to Preview
+          </Typography>
         )}
-      </div>
+      </Box>
+      {previews.length > 0 && checked && (
+        <Paper
+          sx={{
+            padding: 1,
+            marginTop: 1,
+            marginBottom: 1,
+            justifyContent: "center",
+            display: "block",
+            position: "sticky",
+            bottom: 0,
+          }}
+          elevation={3}
+          className="previewpane"
+        >
+          {previews.length > 1
+            ? previews.map((obj) => {
+                if (obj.type === "character")
+                  return (
+                    <Box key={obj.name + "-box"} sx={boxsx}>
+                      <Character key={obj.name} object={obj} />
+                    </Box>
+                  );
+                if (obj.type === "item")
+                  return (
+                    <Box key={obj.name + "-box"} sx={boxsx}>
+                      <Item key={obj.name} object={obj} />
+                    </Box>
+                  );
+              })
+            : previews[0] &&
+              (previews[0].type === "character" ? (
+                <Character key={previews[0].name} object={previews[0]} />
+              ) : (
+                previews[0].type === "item" && (
+                  <Item key={previews[0].name} object={previews[0]} />
+                )
+              ))}
+        </Paper>
+      )}
     </div>
   );
 };

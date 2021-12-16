@@ -1,38 +1,56 @@
 html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
-  margin: auto;
-  padding: 2rem;
   font-size: large;
 }
 
-.previewpane {
-  background-color: rgb(164, 179, 212);
-  text-align: center;
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
 }
 
-#mui-rte-editor-container > div {
-  padding: 20px;
-}
+/* Scrollbar Styling */
 
-#mui-rte-editor {
-  background-color: rgb(165, 207, 216);
+*::-webkit-scrollbar {
+  width: 10px;
 }
-
-.mui-rte-editor {
-  min-height: 10vh;
-}
-
-.characterframe {
-  padding: 10px;
-}
-
-div[role="tabpanel"] {
-  background-color: rgb(163, 163, 163);
-}
-
-div[role="tabpanel"],
-#mui-rte-editor,
-.previewpane {
+*::-webkit-scrollbar-track {
+  background: radial-gradient(closest-corner, #222 0%, #1a1a1a 99%, #000 100%);
   border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: radial-gradient(#444 10%, #333 90%, #222 100%);
+  border-radius: 10px;
+}
+
+/* Styling */
+
+.sidebar {
+  width: "100%";
+  word-wrap: break-word;
+}
+
+.tabstyle {
+  padding: 0 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+  height: 1em;
+}
+
+/* Overrides */
+
+body {
+  margin: 0;
+}
+
+.public-DraftStyleDefault-block {
+  margin: 0;
+}
+
+.rdw-option-wrapper {
+  border-radius: 6px;
 }
