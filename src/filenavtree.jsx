@@ -21,6 +21,7 @@ const FileNavTree = (props) => {
     getFileStructureData(props.workingDirectory).then((data) => {
       setView(data);
     });
+    console.log(props.workingDirectory);
   }, []);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const FileNavTree = (props) => {
   }, [view]);
 
   const getFileStructureData = async (directorypath) => {
-    const data = await window.editorfile.readdir(directorypath, true);
+    const data = await window.fs.readDir(directorypath, true);
     if (data) {
       let filelist = [];
       const promiseStack = data.map((item) => {
@@ -56,7 +57,7 @@ const FileNavTree = (props) => {
     path = props.workingDirectory !== path ? path : "";
     return view.map((next) => {
       if (next !== undefined) {
-        return next.isDir ? (
+        return next.isDir && next.children ? (
           <TreeItem
             label={next.name}
             key={path + "/" + next.name}

@@ -1,12 +1,17 @@
 const { ipcRenderer, contextBridge } = require("electron");
 
-contextBridge.exposeInMainWorld("editorfile", {
-  readfile: (workingdir, filename) =>
+contextBridge.exposeInMainWorld("fs", {
+  readFile: (workingdir, filename) =>
     ipcRenderer.invoke("readFile", [workingdir, filename]),
-  readdir: (directorypath) => ipcRenderer.invoke("readDir", directorypath),
-  writefile: (workingdir, filename, data) =>
+  readDir: (dirpath) => ipcRenderer.invoke("readDir", dirpath),
+  writeFile: (workingdir, filename, data) =>
     ipcRenderer.send("writeFile", [workingdir, filename, data]),
-  removefile: (workingdir, filename) =>
+  removeFile: (workingdir, filename) =>
     ipcRenderer.invoke("removeFile", [workingdir, filename]),
-  createDir: (dir) => ipcRenderer.invoke("createDir", dir)
+  createDir: (dir) => ipcRenderer.invoke("createDir", dir),
+});
+
+contextBridge.exposeInMainWorld("workspace", {
+  choose: () => ipcRenderer.invoke("chooseWorkDir"),
+  get: () => ipcRenderer.invoke("getWorkDir"),
 });

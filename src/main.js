@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { join } = require("path");
 const fs = require("fs");
 
@@ -64,9 +64,23 @@ const removeFile = async (workingdir, filepath) => {
 };
 
 const createDir = async (dir) => {
-  if (!fs.existsSync(dir)){
+  if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
+};
+
+const chooseWorkDir = async () => {
+  const res = await dialog.showOpenDialog({
+    properties: ["openDirectory", "createDirectory", "propmtToCreate"],
+  });
+  if (res.canceled === false) {
+    process.env.REACT_APP_WORKING_DIRECTORY = res.filePaths[0];
+  }
+  return process.env.REACT_APP_WORKING_DIRECTORY;
+};
+
+const getWorkDir = () => {
+  return process.env.REACT_APP_WORKING_DIRECTORY;
 };
 
 ipcMain.handle("readFile", (e, [workingdir, filepath]) => {
@@ -87,7 +101,15 @@ ipcMain.handle("removeFile", (e, [workingdir, filepath]) => {
 
 ipcMain.handle("createDir", (e, dir) => {
   return createDir(dir);
-})
+});
+
+ipcMain.handle("chooseWorkDir", (e) => {
+  return chooseWorkDir();
+});
+
+ipcMain.handle("getWorkDir", (e) => {
+  return getWorkDir();
+});
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -102,6 +124,10 @@ const createWindow = () => {
 
   // load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+  if (process.env.REACT_APP_WORKING_DIRECTORY === undefined) {
+    chooseWorkDir();
+  }
 
   // automatically open the DevTools.
   // mainWindow.webContents.openDevTools();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import EditorFrame from "./editor.jsx";
+import TextEditor from "./texteditor.jsx";
 import InfoPanel from "./infopanel.jsx";
 import { Tabs, Tab, Box, IconButton, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -36,7 +36,7 @@ function a11yProps(index) {
   };
 }
 
-const EditorTabs = (props) => {
+const AppTabs = (props) => {
   const [value, setValue] = useState(0);
   const [tabEditorStates, setTabEditorStates] = useState({});
   const [tabs, setTabs] = useState([]);
@@ -160,7 +160,7 @@ const EditorTabs = (props) => {
   };
 
   return (
-    <Box sx={{ height: "100%", bgcolor: "background.default" }}>
+    <Box sx={{ height: "100%" }}>
       <div
         style={{
           width: "25vw",
@@ -241,6 +241,7 @@ const EditorTabs = (props) => {
             ))}
             {/* ToDo: figure out a way for the add icon to either appear above the right scroll or not be covered when making a new file */}
             <Box className={"tabstyle"}>
+              {/* ToDo: add as actual tab, allow user to close all tabs, deselect when no tabs are present */}
               <IconButton
                 key={"new-tab"}
                 onClick={newTabHandler}
@@ -259,7 +260,7 @@ const EditorTabs = (props) => {
         </Box>
         {tabs.map(({ index, localpath, filename, uuid }) => (
           <TabPanel key={uuid} value={value} index={index}>
-            <EditorFrame
+            <TextEditor
               localpath={localpath}
               filename={filename}
               uuid={uuid}
@@ -275,4 +276,4 @@ const EditorTabs = (props) => {
   );
 };
 
-export default EditorTabs;
+export default AppTabs;

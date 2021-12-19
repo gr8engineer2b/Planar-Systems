@@ -25,7 +25,7 @@ import SaveIcon from "@mui/icons-material/Save";
 const SaveButton = (props) => {
   const [namePrompt, setNamePrompt] = useState(false);
   const [newFileName, setNewFileName] = useState();
-  // ToDo: implement choosing directory location, for now default to root
+  // ToDo: implement choosing directory location, for now default to "root"
   const [newLocalPath, setNewLocalPath] = useState("/");
 
   const saveHandler = async (filename, localpath) => {
@@ -60,11 +60,7 @@ const SaveButton = (props) => {
           console.log("Overwrite Prevented");
         } else {
           // write to file
-          window.editorfile.writefile(
-            saveDirectory,
-            filename,
-            contentPlainText
-          );
+          window.fs.writeFile(saveDirectory, filename, contentPlainText);
           props.setOldFileContents(contentPlainText);
           props.seteditorSuccess(true);
         }
@@ -75,7 +71,7 @@ const SaveButton = (props) => {
   };
 
   const preventOverwrite = async () => {
-    var currentFileData = await window.editorfile.readfile(
+    var currentFileData = await window.fs.readFile(
       props.workingDirectory + props.localpath,
       props.filename
     );
@@ -141,7 +137,7 @@ const SaveButton = (props) => {
   );
 };
 
-const EditorFrame = (props) => {
+const TextEditor = (props) => {
   const [editorState, setEditorState] = useState(
     props.editorState ? props.editorState : EditorState.createEmpty()
   );
@@ -163,7 +159,7 @@ const EditorFrame = (props) => {
       props.filename !== "" &&
       editorState.getCurrentContent().getPlainText() === ""
     ) {
-      const data = await window.editorfile.readfile(
+      const data = await window.fs.readFile(
         props.workingDirectory + props.localpath,
         props.filename
       );
@@ -338,4 +334,4 @@ const EditorFrame = (props) => {
   );
 };
 
-export default EditorFrame;
+export default TextEditor;
