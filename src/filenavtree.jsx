@@ -7,11 +7,11 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 const FileNavTree = (props) => {
   const [view, setView] = useState([
     {
-      filename: "top1",
+      filename: "broken",
       children: [
         {
-          filename: "lower1",
-          children: [{ filename: "lowest1", children: [] }],
+          filename: "file",
+          children: [{ filename: "nav", children: [] }],
         },
       ],
     },
@@ -21,7 +21,6 @@ const FileNavTree = (props) => {
     getFileStructureData(props.workingDirectory).then((data) => {
       setView(data);
     });
-    console.log(props.workingDirectory);
   }, []);
 
   useEffect(() => {

@@ -41,6 +41,14 @@ body,
   height: 1em;
 }
 
+.lasttab {
+  padding: 0;
+}
+
+.DraftEditor-root {
+  height: calc(50vh - 24px);
+}
+
 /* Overrides */
 
 body {
@@ -53,4 +61,12 @@ body {
 
 .rdw-option-wrapper {
   border-radius: 6px;
+}
+
+.rdw-dropdown-optionwrapper {
+  overflow-y: auto;
+}
+
+.text-color-override {
+  color: black;
 }

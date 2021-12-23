@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import Preview from "./preview.jsx";
+import { draftToMarkdown, markdownToDraft } from "markdown-draft-js";
 import {
+  convertToRaw,
   convertFromRaw,
   EditorState,
-  ContentState,
   SelectionState,
   Modifier,
 } from "draft-js";
@@ -33,26 +33,14 @@ const SaveButton = (props) => {
       ? props.workingDirectory + localpath
       : props.workingDirectory;
     filename = filename ? filename : props.filename;
-    console.log(saveDirectory, filename);
     if (filename === "") {
       promptOpenHandler();
     } else {
       try {
-        const contentState = props.editorState.getCurrentContent();
-        let contentPlainText = null;
-        //try to parse as JSON string and create a new draft js content state
-        try {
-          contentPlainText = convertFromRaw(
-            JSON.parse(contentState)
-          ).getPlainText();
-        } catch (err1) {
-          //try to get plain text from draft js
-          try {
-            contentPlainText = contentState.getPlainText();
-          } catch (err2) {
-            console.log("Cannot handle save: " + err1 + " and " + err2);
-          }
-        }
+        //markdown conversion
+        const contentToSave = draftToMarkdown(
+          convertToRaw(props.editorState.getCurrentContent())
+        );
         //prevent saving nothing
         const overResult = props.filename ? await preventOverwrite() : false;
         if (overResult) {
@@ -60,12 +48,12 @@ const SaveButton = (props) => {
           console.log("Overwrite Prevented");
         } else {
           // write to file
-          window.fs.writeFile(saveDirectory, filename, contentPlainText);
-          props.setOldFileContents(contentPlainText);
+          window.fs.writeFile(saveDirectory, filename, contentToSave);
+          props.setOldFileContents(contentToSave);
           props.seteditorSuccess(true);
         }
       } catch (err) {
-        console.log("Unable to update state, Invalid object: " + err);
+        console.log("Unable to update state\n" + err);
       }
     }
   };
@@ -142,12 +130,7 @@ const TextEditor = (props) => {
     props.editorState ? props.editorState : EditorState.createEmpty()
   );
   const [oldFileContents, setOldFileContents] = useState("");
-  const [editorError, setEditorError] = useState();
   const [editorSuccess, seteditorSuccess] = useState(false);
-
-  const updateEditorError = (error) => {
-    setEditorError(error);
-  };
 
   useEffect(() => {
     // gets initial file data but doesn't overwrite state saved in editortabs
@@ -166,7 +149,7 @@ const TextEditor = (props) => {
       if (data !== undefined && typeof data === "string") {
         try {
           setEditorState(
-            EditorState.createWithContent(ContentState.createFromText(data))
+            EditorState.createWithContent(convertFromRaw(markdownToDraft(data)))
           );
           setOldFileContents(data);
         } catch (err) {
@@ -265,7 +248,21 @@ const TextEditor = (props) => {
   return (
     <Box className="editor-panel" sx={{ color: "text.primary" }}>
       <Editor
-        toolbar={{ options: ["history"] }}
+        toolbar={{
+          // markdown-draftjs 2.40 does not support text align html tags (markdown doesn't support alignment)
+          options: ["history", "inline", "list", "blockType", "remove"],
+          blockType: { className: "text-color-override" },
+          // markdown -draftjs 2.40 does not support sub/super script
+          inline: {
+            options: [
+              "bold",
+              "italic",
+              "underline",
+              "strikethrough",
+              "monospace",
+            ],
+          },
+        }}
         toolbarStyle={{
           backgroundColor: "inherit",
           borderWidth: "0",
@@ -286,7 +283,6 @@ const TextEditor = (props) => {
             setOldFileContents={setOldFileContents}
             workingDirectory={props.workingDirectory}
             localpath={props.localpath}
-            updateEditorError={updateEditorError}
             nameFileHandler={props.nameFileHandler}
             uuid={props.uuid}
           />,
@@ -297,25 +293,6 @@ const TextEditor = (props) => {
         onEditorStateChange={onEditorStateChange}
         onTab={tabHandler}
       />
-      <Preview
-        data={editorState.getCurrentContent().getPlainText()}
-        filename={props.filename}
-        updateEditorError={updateEditorError}
-      />
-      {editorError !== undefined && (
-        <Tooltip title={editorError}>
-          <Alert
-            sx={
-              windowIsSmall()
-                ? { display: "inline-block", width: "22px", height: "38px" }
-                : {}
-            }
-            severity="error"
-          >
-            {windowIsSmall() ? "" : editorError}
-          </Alert>
-        </Tooltip>
-      )}
       {editorSuccess === true && (
         <Tooltip title={"Saved " + props.filename}>
           <Alert

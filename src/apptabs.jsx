@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import TextEditor from "./texteditor.jsx";
 import InfoPanel from "./infopanel.jsx";
-import { Tabs, Tab, Box, IconButton, Tooltip } from "@mui/material";
+import { Tabs, Tab, Box, IconButton, Button, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
@@ -37,7 +37,7 @@ function a11yProps(index) {
 }
 
 const AppTabs = (props) => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(99999);
   const [tabEditorStates, setTabEditorStates] = useState({});
   const [tabs, setTabs] = useState([]);
 
@@ -61,18 +61,17 @@ const AppTabs = (props) => {
   const newTabHandler = (event, localpath, filename) => {
     const newindex = tabs.length;
     const uuid = uuidv4();
-    addTab(
-      newindex,
-      uuid,
-      localpath,
-      filename !== undefined ? filename : undefined
-    );
-    setValue(newindex);
+
+    addTab(newindex, uuid, localpath, filename);
   };
 
   const addTab = (index, uuid, localpath, filename) => {
-    filename !== undefined
-      ? setTabs([
+    if (filename !== undefined) {
+      const match = tabs.filter((x) => {
+        return x.filename === filename && x.localpath === localpath;
+      });
+      if (match.length === 0) {
+        setTabs([
           ...tabs,
           {
             filename: filename,
@@ -80,16 +79,23 @@ const AppTabs = (props) => {
             index: index,
             uuid: uuid,
           },
-        ])
-      : setTabs([
-          ...tabs,
-          {
-            filename: "",
-            localpath: "",
-            index: index,
-            uuid: uuid,
-          },
         ]);
+        setValue(index);
+      } else {
+        setValue(tabs.findIndex((tab) => tab === match[0]));
+      }
+    } else {
+      setTabs([
+        ...tabs,
+        {
+          filename: "",
+          localpath: "",
+          index: index,
+          uuid: uuid,
+        },
+      ]);
+      setValue(index);
+    }
     setTabEditorStates((states) => {
       states[uuid] = null;
       return states;
@@ -97,19 +103,21 @@ const AppTabs = (props) => {
   };
 
   const removeTab = (index) => {
-    var newTabs;
+    let newTabs = [];
+    let newIndex = index;
     if (index !== undefined) {
       newTabs = tabs.filter((tab) => {
         return tab.index !== index;
       });
       if (newTabs.length === 0) {
+        newIndex = 99999; // the last tab
         newTabs = [
-          {
-            filename: "",
-            localpath: "",
-            index: 0,
-            uuid: uuidv4(),
-          },
+          // {
+          //   filename: "",
+          //   localpath: "",
+          //   index: 0,
+          //   uuid: uuidv4(),
+          // },
         ];
       } else {
         // this is a reindex step, :) it just works
@@ -120,10 +128,17 @@ const AppTabs = (props) => {
           index: inc++ - 1,
           uuid: tab.uuid,
         }));
+        // keeps the user on the working tab, -2 because of "add tab" tab & same for default -1
+        newIndex =
+          index < value
+            ? value - 1
+            : value === 0 || value === index
+            ? value
+            : value + 1;
       }
       setTabs(newTabs);
-      // keeps the user on the working tab
-      setValue(index < value ? value - 1 : value);
+
+      setValue(newIndex);
       // ToDo: handle state removeal from tabeditorstates
     }
   };
@@ -199,7 +214,7 @@ const AppTabs = (props) => {
             {tabs.map(({ localpath, filename, index, uuid }) => (
               <Tab
                 component="div"
-                className={"tabstyle"}
+                className="tabstyle"
                 key={filename !== "" ? localpath + filename : "empty-" + uuid}
                 label={
                   <span>
@@ -240,22 +255,29 @@ const AppTabs = (props) => {
               />
             ))}
             {/* ToDo: figure out a way for the add icon to either appear above the right scroll or not be covered when making a new file */}
-            <Box className={"tabstyle"}>
-              {/* ToDo: add as actual tab, allow user to close all tabs, deselect when no tabs are present */}
-              <IconButton
-                key={"new-tab"}
-                onClick={newTabHandler}
-                sx={{
-                  display: "inline-flex",
-                  height: "1em",
-                  width: "1em",
-                  margin: "0.5em 0",
-                }}
-                color="success"
-              >
-                <AddIcon fontSize="normal" />
-              </IconButton>
-            </Box>
+            <Tab
+              component="div"
+              className="tabstyle lasttab"
+              key="lastTab"
+              value={99999}
+              label={
+                <IconButton
+                  key={"new-tab"}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    newTabHandler();
+                  }}
+                  sx={{
+                    height: "100%",
+                    width: "100%",
+                    borderRadius: 0,
+                  }}
+                  color="success"
+                >
+                  <AddIcon fontSize="normal" />
+                </IconButton>
+              }
+            />
           </Tabs>
         </Box>
         {tabs.map(({ index, localpath, filename, uuid }) => (
@@ -271,6 +293,19 @@ const AppTabs = (props) => {
             />
           </TabPanel>
         ))}
+        <TabPanel key={"lastTabPanel"} value={value} index={99999}>
+          <Button
+            key={"new-tab-alt"}
+            onClick={(event) => {
+              event.stopPropagation();
+              newTabHandler();
+            }}
+            color="success"
+            variant="outlined"
+          >
+            Create New Tab
+          </Button>
+        </TabPanel>
       </div>
     </Box>
   );
