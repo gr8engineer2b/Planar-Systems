@@ -13,12 +13,15 @@ function TabPanel(props) {
   return (
     <div
       role="tabpanel"
+      style={{ height: "calc(100% - 57px - 16px - 50px)" }}
       hidden={value !== index}
       id={`tabpanel-${index}`}
       aria-labelledby={`tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 2, paddingTop: 0 }}>{children}</Box>}
+      {value === index && (
+        <Box sx={{ p: 2, paddingTop: 0, height: "100%" }}>{children}</Box>
+      )}
     </div>
   );
 }
@@ -128,13 +131,8 @@ const AppTabs = (props) => {
           index: inc++ - 1,
           uuid: tab.uuid,
         }));
-        // keeps the user on the working tab, -2 because of "add tab" tab & same for default -1
-        newIndex =
-          index < value
-            ? value - 1
-            : value === 0 || value === index
-            ? value
-            : value + 1;
+        // keeps the user on the working tab
+        newIndex = index <= value ? (value === 0 ? 0 : value - 1) : value;
       }
       setTabs(newTabs);
 
@@ -195,6 +193,7 @@ const AppTabs = (props) => {
           minWidth: "300px",
           width: "auto",
           overflow: "hidden",
+          height: "100%",
         }}
       >
         <Box

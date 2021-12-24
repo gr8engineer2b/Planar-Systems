@@ -246,10 +246,13 @@ const TextEditor = (props) => {
   };
 
   return (
-    <Box className="editor-panel" sx={{ color: "text.primary" }}>
+    <Box
+      className="editor-panel"
+      sx={{ color: "text.primary", height: "100%" }}
+    >
       <Editor
         toolbar={{
-          // markdown-draftjs 2.40 does not support text align html tags (markdown doesn't support alignment)
+          // markdown-draftjs 2.40 does not support text align html tags out of box (markdown doesn't support alignment)
           options: ["history", "inline", "list", "blockType", "remove"],
           blockType: { className: "text-color-override" },
           // markdown -draftjs 2.40 does not support sub/super script
@@ -271,9 +274,9 @@ const TextEditor = (props) => {
           padding: "10px",
           overflowY: "auto",
           display: "block",
-          maxHeight: "50vh",
           border: "2px solid rgba(9,9,9,0.5)",
           borderRadius: "10px",
+          height: "calc(100% - 44px)",
         }}
         toolbarCustomButtons={[
           <SaveButton
@@ -294,12 +297,17 @@ const TextEditor = (props) => {
         onTab={tabHandler}
       />
       {editorSuccess === true && (
-        <Tooltip title={"Saved " + props.filename}>
+        <Tooltip variant="filled" title={"Saved " + props.filename}>
           <Alert
             sx={
               windowIsSmall()
-                ? { display: "inline-block", width: "22px", height: "38px" }
-                : {}
+                ? {
+                    marginTop: "10px",
+                    display: "inline-block",
+                    width: "22px",
+                    height: "38px",
+                  }
+                : { marginTop: "10px" }
             }
             severity="success"
           >
