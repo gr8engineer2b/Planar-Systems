@@ -63,6 +63,15 @@ const removeFile = async (workingdir, filepath) => {
   }
 };
 
+const rename = async (workingdir, filepath, newfilepath, overwrite) => {
+  const oldexists = fs.existsSync(join(workingdir, filepath));
+  const newdoesnotexist = !fs.existsSync(join(workingdir, newfilepath));
+  // ensuring file exists to be renamed and that the file it will become does not
+  if (oldexists && (newdoesnotexist || overwrite)) {
+    fs.renameSync(join(workingdir, filepath), join(workingdir, newfilepath));
+  }
+};
+
 const createDir = async (dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
@@ -86,27 +95,27 @@ const getWorkDir = () => {
 ipcMain.handle("readFile", (e, [workingdir, filepath]) => {
   return readFile(workingdir, filepath);
 });
-
 ipcMain.handle("readDir", (e, directorypath) => {
   return readDir(directorypath);
 });
-
 ipcMain.on("writeFile", (e, [workingdir, filepath, data]) => {
   writeFile(workingdir, filepath, data);
 });
-
 ipcMain.handle("removeFile", (e, [workingdir, filepath]) => {
   return removeFile(workingdir, filepath);
 });
-
+ipcMain.handle(
+  "rename",
+  (e, [workingdir, filepath, newfilepath, overwrite]) => {
+    return rename(workingdir, filepath, newfilepath, overwrite);
+  }
+);
 ipcMain.handle("createDir", (e, dir) => {
   return createDir(dir);
 });
-
 ipcMain.handle("chooseWorkDir", (e) => {
   return chooseWorkDir();
 });
-
 ipcMain.handle("getWorkDir", (e) => {
   return getWorkDir();
 });

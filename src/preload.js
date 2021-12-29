@@ -8,6 +8,13 @@ contextBridge.exposeInMainWorld("fs", {
     ipcRenderer.send("writeFile", [workingdir, filename, data]),
   removeFile: (workingdir, filename) =>
     ipcRenderer.invoke("removeFile", [workingdir, filename]),
+  rename: (workingdir, filename, newfilepath, overwrite) =>
+    ipcRenderer.invoke("rename", [
+      workingdir,
+      filename,
+      newfilepath,
+      overwrite,
+    ]),
   createDir: (dir) => ipcRenderer.invoke("createDir", dir),
 });
 

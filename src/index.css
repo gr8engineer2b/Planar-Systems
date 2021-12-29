@@ -43,14 +43,14 @@ body,
   height: 1em;
 }
 
-.lasttab {
-  padding: 0;
-}
-
 /* Overrides */
 
 body {
   margin: 0;
+}
+
+.lasttab {
+  padding: 0;
 }
 
 .public-DraftStyleDefault-block {
