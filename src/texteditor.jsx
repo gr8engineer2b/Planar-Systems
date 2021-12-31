@@ -126,6 +126,9 @@ const TextEditor = (props) => {
   useEffect(() => {
     // gets initial file data but doesn't overwrite state saved in editortabs
     grabInital();
+    document
+      .getElementsByClassName("public-DraftEditor-content")[0]
+      .addEventListener("keydown", handleForceBlur);
   }, []);
 
   const grabInital = async () => {
@@ -226,6 +229,12 @@ const TextEditor = (props) => {
         newSelectionState
       );
       setEditorState(newEditorState);
+    }
+  };
+
+  const handleForceBlur = (event) => {
+    if (event.key === "Escape") {
+      document.getElementsByClassName("public-DraftEditor-content")[0].blur();
     }
   };
 
