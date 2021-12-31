@@ -61,24 +61,23 @@ const AppTabs = (props) => {
     setValue(newValue);
   };
 
-  const newTabHandler = (event, localpath, filename) => {
+  const newTabHandler = (event, filepath) => {
     const newindex = tabs.length;
     const uuid = uuidv4();
 
-    addTab(newindex, uuid, localpath, filename);
+    addTab(newindex, uuid, filepath);
   };
 
-  const addTab = (index, uuid, localpath, filename) => {
-    if (filename !== undefined) {
+  const addTab = (index, uuid, filepath) => {
+    if (filepath !== undefined) {
       const match = tabs.filter((x) => {
-        return x.filename === filename && x.localpath === localpath;
+        return x.filepath === filepath;
       });
       if (match.length === 0) {
         setTabs([
           ...tabs,
           {
-            filename: filename,
-            localpath: localpath,
+            filepath: filepath,
             index: index,
             uuid: uuid,
           },
@@ -91,8 +90,7 @@ const AppTabs = (props) => {
       setTabs([
         ...tabs,
         {
-          filename: "",
-          localpath: "",
+          filepath: "",
           index: index,
           uuid: uuid,
         },
@@ -114,10 +112,10 @@ const AppTabs = (props) => {
       });
       if (newTabs.length === 0) {
         newIndex = 99999; // the last tab
+        // can keep an empty editor tab active if desired
         newTabs = [
           // {
-          //   filename: "",
-          //   localpath: "",
+          //   filepath: "",
           //   index: 0,
           //   uuid: uuidv4(),
           // },
@@ -126,8 +124,7 @@ const AppTabs = (props) => {
         // this is a reindex step, :) it just works
         var inc = 1;
         newTabs = newTabs.map((tab) => ({
-          filename: tab.filename,
-          localpath: tab.localpath,
+          filepath: tab.filepath,
           index: inc++ - 1,
           uuid: tab.uuid,
         }));
@@ -141,7 +138,7 @@ const AppTabs = (props) => {
     }
   };
 
-  const nameFileHandler = (uuid, filename, localpath) => {
+  const nameFileHandler = (uuid, filepath) => {
     const tabmatch = tabs.filter((tab) => {
       return tab.uuid === uuid;
     });
@@ -152,8 +149,7 @@ const AppTabs = (props) => {
       setTabs([
         ...antitabmatch,
         {
-          filename: filename,
-          localpath: localpath,
+          filepath: filepath,
           index: tabmatch[0].index,
           uuid: tabmatch[0].uuid,
         },
@@ -161,15 +157,22 @@ const AppTabs = (props) => {
     }
   };
 
-  const parseFilename = (filename, trunclen) => {
+  const parseFilepath = (filepath, trunclen) => {
+    const path = filepath.slice(0, filepath.lastIndexOf("/"));
+    let filename = filepath.slice(
+      filepath.lastIndexOf("/") + 1,
+      filepath.length
+    );
     if (trunclen === undefined) trunclen = 10;
     const extention = filename.slice(
       ((filename.lastIndexOf(".") - 1) >>> 0) + 2
     );
-    const name = filename.slice(0, -extention.length - 1);
+    filename = filename.slice(0, -extention.length - 1);
     const trunc =
-      name.length > trunclen ? name.slice(0, trunclen - 2) + ".." : name;
-    return [trunc, extention, name];
+      filename.length > trunclen
+        ? filename.slice(0, trunclen - 2) + ".."
+        : filename;
+    return [path, trunc, extention, filename];
   };
 
   return (
@@ -183,10 +186,7 @@ const AppTabs = (props) => {
           borderLeft: "1px solid #222",
         }}
       >
-        <InfoPanel
-          newTabHandler={newTabHandler}
-          workingDirectory={props.workingDirectory}
-        />
+        <InfoPanel newTabHandler={newTabHandler} />
       </div>
       <div
         style={{
@@ -210,21 +210,21 @@ const AppTabs = (props) => {
             onChange={changeTabHandler}
             sx={{ borderBottom: "1px solid #222" }}
           >
-            {tabs.map(({ localpath, filename, index, uuid }) => (
+            {tabs.map(({ filepath, index, uuid }) => (
               <Tab
                 component="div"
                 className="tabstyle"
-                key={filename !== "" ? localpath + filename : "empty-" + uuid}
+                key={filepath !== "" ? filepath : "empty-" + uuid}
                 label={
                   <span>
-                    {filename !== "" ? (
-                      <Tooltip title={localpath}>
+                    {filepath !== "" ? (
+                      <Tooltip title={parseFilepath(filepath)[0]}>
                         <span>
                           <div style={{ display: "inline-flex" }}>
-                            {parseFilename(filename)[0]}
+                            {parseFilepath(filepath)[1]}
                           </div>
                           <div style={{ display: "inline-flex" }}>
-                            .{parseFilename(filename)[1]}
+                            .{parseFilepath(filepath)[2]}
                           </div>
                         </span>
                       </Tooltip>
@@ -279,15 +279,13 @@ const AppTabs = (props) => {
             />
           </Tabs>
         </Box>
-        {tabs.map(({ index, localpath, filename, uuid }) => (
+        {tabs.map(({ index, filepath, uuid }) => (
           <TabPanel key={uuid} value={value} index={index}>
             <TextEditor
-              localpath={localpath}
-              filename={filename}
+              filepath={filepath}
               uuid={uuid}
               editorChangeHandler={editorChangeHandler}
               editorState={tabEditorStates[uuid]}
-              workingDirectory={props.workingDirectory}
               nameFileHandler={nameFileHandler}
             />
           </TabPanel>

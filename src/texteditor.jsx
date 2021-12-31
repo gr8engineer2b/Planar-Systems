@@ -24,16 +24,12 @@ import SaveIcon from "@mui/icons-material/Save";
 
 const SaveButton = (props) => {
   const [namePrompt, setNamePrompt] = useState(false);
-  const [newFileName, setNewFileName] = useState();
-  // ToDo: implement choosing directory location, for now default to "root"
-  const [newLocalPath, setNewLocalPath] = useState("/");
+  const [newFilepath, setNewFilepath] = useState();
+  // ToDo: implement choosing directory location
 
-  const saveHandler = async (filename, localpath) => {
-    const saveDirectory = localpath
-      ? props.workingDirectory + localpath
-      : props.workingDirectory;
-    filename = filename ? filename : props.filename;
-    if (filename === "") {
+  const saveHandler = async (filepath) => {
+    filepath = filepath ? filepath : props.filepath;
+    if (filepath === "") {
       promptOpenHandler();
     } else {
       try {
@@ -42,13 +38,13 @@ const SaveButton = (props) => {
           convertToRaw(props.editorState.getCurrentContent())
         );
         //prevent saving nothing
-        const overResult = props.filename ? await preventOverwrite() : false;
+        const overResult = props.filepath ? await preventOverwrite() : false;
         if (overResult) {
           // event to be logged
           console.log("Overwrite Prevented");
         } else {
           // write to file
-          window.fs.writeFile(saveDirectory, filename, contentToSave);
+          window.fs.writeFile(filepath, contentToSave);
           props.setOldFileContents(contentToSave);
           props.seteditorSuccess(true);
         }
@@ -59,10 +55,7 @@ const SaveButton = (props) => {
   };
 
   const preventOverwrite = async () => {
-    var currentFileData = await window.fs.readFile(
-      props.workingDirectory + props.localpath,
-      props.filename
-    );
+    var currentFileData = await window.fs.readFile(props.filepath);
     // if the file is not as the editor expects, prevent write
     if (currentFileData === props.oldFileContents) {
       return false;
@@ -72,10 +65,10 @@ const SaveButton = (props) => {
     }
   };
 
-  const promptCloseHandler = (filename, localpath) => {
-    if (filename !== undefined) {
-      props.nameFileHandler(props.uuid, filename, localpath);
-      saveHandler(filename, localpath);
+  const promptCloseHandler = (filepath) => {
+    if (filepath !== undefined) {
+      props.nameFileHandler(props.uuid, filepath);
+      saveHandler(filepath);
       setNamePrompt(false);
     } else {
       setNamePrompt(false);
@@ -99,14 +92,12 @@ const SaveButton = (props) => {
             type="text"
             fullWidth
             variant="standard"
-            onChange={(event) => setNewFileName(event.target.value)}
+            onChange={(event) => setNewFilepath(event.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => promptCloseHandler()}>Close</Button>
-          <Button onClick={() => promptCloseHandler(newFileName, newLocalPath)}>
-            Save
-          </Button>
+          <Button onClick={() => promptCloseHandler(newFilepath)}>Save</Button>
         </DialogActions>
       </Dialog>
       <div
@@ -139,13 +130,10 @@ const TextEditor = (props) => {
 
   const grabInital = async () => {
     if (
-      props.filename !== "" &&
+      props.filepath !== "" &&
       editorState.getCurrentContent().getPlainText() === ""
     ) {
-      const data = await window.fs.readFile(
-        props.workingDirectory + props.localpath,
-        props.filename
-      );
+      const data = await window.fs.readFile(props.filepath);
       if (data !== undefined && typeof data === "string") {
         try {
           setEditorState(
@@ -280,12 +268,11 @@ const TextEditor = (props) => {
         }}
         toolbarCustomButtons={[
           <SaveButton
-            filename={props.filename}
+            filepath={props.filepath}
             oldFileContents={oldFileContents}
             seteditorSuccess={seteditorSuccess}
             setOldFileContents={setOldFileContents}
             workingDirectory={props.workingDirectory}
-            localpath={props.localpath}
             nameFileHandler={props.nameFileHandler}
             uuid={props.uuid}
           />,
@@ -297,7 +284,7 @@ const TextEditor = (props) => {
         onTab={tabHandler}
       />
       {editorSuccess === true && (
-        <Tooltip variant="filled" title={"Saved " + props.filename}>
+        <Tooltip variant="filled" title={"Saved " + props.filepath}>
           <Alert
             sx={
               windowIsSmall()
@@ -311,7 +298,7 @@ const TextEditor = (props) => {
             }
             severity="success"
           >
-            {windowIsSmall() ? "" : "Saved " + props.filename}
+            {windowIsSmall() ? "" : "Saved " + props.filepath}
           </Alert>
         </Tooltip>
       )}

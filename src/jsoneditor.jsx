@@ -8,7 +8,7 @@ const jsonEditor = () => {
       {/* editor logic placeholder */}
       <Preview
         data={editorState.getCurrentContent().getPlainText()}
-        filename={props.filename}
+        filepath={props.filepath}
         updateEditorError={updateEditorError}
       />
       ;

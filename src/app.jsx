@@ -24,19 +24,16 @@ const myTheme = createTheme({
 });
 
 const App = () => {
-  const [workingDirectory, setWorkingDirectory] = useState();
+  const [hasWorkingDirectory, setHasWorkingDirectory] = useState(false);
 
   useEffect(() => {
-    grabDir();
+    grabInitial();
   }, []);
 
-  const grabDir = async () => {
-    const wkdir = await window.workspace.get();
-    if (wkdir === undefined) {
-      const res = await window.workspace.choose();
-      setWorkingDirectory(res);
-    } else {
-      setWorkingDirectory(wkdir);
+  const grabInitial = async () => {
+    if (!hasWorkingDirectory) {
+      const res = window.workspace.choose();
+      setHasWorkingDirectory(res);
     }
   };
 
@@ -52,8 +49,8 @@ const App = () => {
   return (
     <ThemeProvider theme={myTheme}>
       <Box height="100%" bgcolor="background.default" color="text.primary">
-        {workingDirectory ? (
-          <AppTabs workingDirectory={workingDirectory} />
+        {hasWorkingDirectory ? (
+          <AppTabs />
         ) : (
           <Box height="100%">
             <Dialog open={true} height="20vh">

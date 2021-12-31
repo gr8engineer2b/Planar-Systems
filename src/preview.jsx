@@ -26,7 +26,7 @@ const Preview = (props) => {
         props.updateEditorError();
       } catch (err) {
         props.updateEditorError(
-          "Please remedy your JSON error in " + props.filename + ":\n" + err
+          "Please remedy your JSON error in " + props.filepath + ":\n" + err
         );
       }
     } else props.updateEditorError();

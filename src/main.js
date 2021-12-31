@@ -16,20 +16,20 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
-const readFile = async (workingdir, filepath) => {
-  if (fs.existsSync(join(workingdir))) {
-    if (fs.existsSync(join(workingdir, filepath))) {
-      return fs.readFileSync(join(workingdir, filepath), "utf-8");
-    } else {
-      return null;
-    }
+const readFile = async (filepath) => {
+  const workingdir = getWorkDir();
+  if (fs.existsSync(join(workingdir, filepath))) {
+    return fs.readFileSync(join(workingdir, filepath), "utf-8");
+  } else {
+    return null;
   }
 };
 
 const readDir = async (directorypath) => {
-  if (fs.existsSync(join(directorypath))) {
-    if (fs.statSync(join(directorypath)).isDirectory()) {
-      return fs.readdirSync(join(directorypath)).map((file) => {
+  const workingdir = getWorkDir();
+  if (fs.existsSync(join(workingdir, directorypath))) {
+    if (fs.statSync(join(workingdir, directorypath)).isDirectory()) {
+      return fs.readdirSync(join(workingdir, directorypath)).map((file) => {
         if (
           allowlist
             .map((exp) => {
@@ -44,7 +44,9 @@ const readDir = async (directorypath) => {
         ) {
           return {
             name: file,
-            isDir: fs.statSync(join(directorypath, file)).isDirectory(),
+            isDir: fs
+              .statSync(join(workingdir, directorypath, file))
+              .isDirectory(),
             children: [],
           };
         }
@@ -53,17 +55,20 @@ const readDir = async (directorypath) => {
   }
 };
 
-const writeFile = async (workingdir, filepath, data) => {
+const writeFile = async (filepath, data) => {
+  const workingdir = getWorkDir();
   fs.writeFileSync(join(workingdir, filepath), data, "utf-8");
 };
 
-const removeFile = async (workingdir, filepath) => {
+const removeFile = async (filepath) => {
+  const workingdir = getWorkDir();
   if (fs.existsSync(join(workingdir, filepath))) {
     fs.unlinkSync(join(workingdir, filepath));
   }
 };
 
-const rename = async (workingdir, filepath, newfilepath, overwrite) => {
+const rename = async (filepath, newfilepath, overwrite) => {
+  const workingdir = getWorkDir();
   const oldexists = fs.existsSync(join(workingdir, filepath));
   const newdoesnotexist = !fs.existsSync(join(workingdir, newfilepath));
   // ensuring file exists to be renamed and that the file it will become does not
@@ -72,9 +77,10 @@ const rename = async (workingdir, filepath, newfilepath, overwrite) => {
   }
 };
 
-const createDir = async (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
+const createDir = async (directorypath) => {
+  const workingdir = getWorkDir();
+  if (!fs.existsSync(join(workingdir, directorypath))) {
+    fs.mkdirSync(join(workingdir, directorypath));
   }
 };
 
@@ -92,32 +98,26 @@ const getWorkDir = () => {
   return process.env.REACT_APP_WORKING_DIRECTORY;
 };
 
-ipcMain.handle("readFile", (e, [workingdir, filepath]) => {
-  return readFile(workingdir, filepath);
+ipcMain.handle("readFile", (e, filepath) => {
+  return readFile(filepath);
 });
 ipcMain.handle("readDir", (e, directorypath) => {
   return readDir(directorypath);
 });
-ipcMain.on("writeFile", (e, [workingdir, filepath, data]) => {
-  writeFile(workingdir, filepath, data);
+ipcMain.on("writeFile", (e, [filepath, data]) => {
+  writeFile(filepath, data);
 });
-ipcMain.handle("removeFile", (e, [workingdir, filepath]) => {
-  return removeFile(workingdir, filepath);
+ipcMain.handle("removeFile", (e, filepath) => {
+  return removeFile(filepath);
 });
-ipcMain.handle(
-  "rename",
-  (e, [workingdir, filepath, newfilepath, overwrite]) => {
-    return rename(workingdir, filepath, newfilepath, overwrite);
-  }
-);
-ipcMain.handle("createDir", (e, dir) => {
-  return createDir(dir);
+ipcMain.handle("rename", (e, [filepath, newfilepath, overwrite]) => {
+  return rename(filepath, newfilepath, overwrite);
+});
+ipcMain.handle("createDir", (e, directorypath) => {
+  return createDir(directorypath);
 });
 ipcMain.handle("chooseWorkDir", (e) => {
   return chooseWorkDir();
-});
-ipcMain.handle("getWorkDir", (e) => {
-  return getWorkDir();
 });
 
 const createWindow = () => {

@@ -11,7 +11,6 @@ const InfoPanel = (props) => {
     >
       <FileNavTree
         newTabHandler={props.newTabHandler}
-        workingDirectory={props.workingDirectory}
         refreshPeriod={2} // int - in seconds
       />
     </Box>
