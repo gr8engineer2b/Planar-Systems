@@ -9,6 +9,7 @@ const allowlist = [
 ];
 
 const ignorelist = [/^Rubbish/];
+let mainWindow;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -85,13 +86,13 @@ const createDir = async (directorypath) => {
 };
 
 const chooseWorkDir = async () => {
-  const res = await dialog.showOpenDialog({
+  const res = await dialog.showOpenDialog(mainWindow, {
     properties: ["openDirectory", "createDirectory", "propmtToCreate"],
   });
   if (res.canceled === false) {
     process.env.REACT_APP_WORKING_DIRECTORY = res.filePaths[0];
   }
-  return process.env.REACT_APP_WORKING_DIRECTORY;
+  return !res.canceled;
 };
 
 const getWorkDir = () => {
@@ -121,22 +122,19 @@ ipcMain.handle("chooseWorkDir", (e) => {
 });
 
 const createWindow = () => {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
     minHeight: 512,
     minWidth: 512,
     webPreferences: {
       preload: join(__dirname, "preload.js"),
+      nodeIntegration: true,
     },
   });
 
   // load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-  if (process.env.REACT_APP_WORKING_DIRECTORY === undefined) {
-    chooseWorkDir();
-  }
 
   // automatically open the DevTools.
   // mainWindow.webContents.openDevTools();

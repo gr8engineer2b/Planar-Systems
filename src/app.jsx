@@ -27,19 +27,20 @@ const App = () => {
   const [hasWorkingDirectory, setHasWorkingDirectory] = useState(false);
 
   useEffect(() => {
-    grabInitial();
+    chooseDir();
   }, []);
 
-  const grabInitial = async () => {
+  const chooseDir = async () => {
     if (!hasWorkingDirectory) {
-      const res = window.workspace.choose();
+      const res = await window.workspace.choose();
+      console.log(res);
       setHasWorkingDirectory(res);
     }
   };
 
   const genSkeletonLines = () => {
     let rows = [];
-    const num = window.innerHeight / 45;
+    const num = (window.innerHeight * 0.7 - 48) / 26;
     for (let x = 0; x < num; x++) {
       rows.push(<Skeleton key={x} />);
     }
@@ -54,23 +55,22 @@ const App = () => {
         ) : (
           <Box height="100%">
             <Dialog open={true} height="20vh">
-              <DialogContent sx={{ padding: "2em", backgroundColor: "#111" }}>
+              <DialogContent sx={{ padding: 0, backgroundColor: "#111" }}>
                 <Button
                   color="error"
-                  variant="outlined"
-                  onClick={() => grabDir()}
+                  variant="contained"
+                  onClick={() => chooseDir()}
                 >
                   Select Directory to Continue
                 </Button>
               </DialogContent>
             </Dialog>
-            <div style={{ padding: "0.5em 0 0 0" }}>
+            <div style={{ padding: "1em" }}>
               <Skeleton
                 variant="rectangular"
                 sx={{
                   height: "2em",
                   borderRadius: 1,
-                  margin: "1em",
                 }}
               />
             </div>
@@ -79,25 +79,27 @@ const App = () => {
                 width: "25vw",
                 minWidth: "180px",
                 float: "right",
-                height: "calc(100% - 2em)",
+                height: "calc(100% - 5em)",
                 padding: "0 1em 1em 0",
               }}
             >
               <Skeleton
                 variant="rectangular"
                 sx={{
-                  height: "calc(90vh  - 1em)",
+                  height: "100%",
                   borderRadius: 1,
                 }}
               />
             </div>
+            <br />
+            <br />
             <div style={{ padding: "1em", display: "flow-root" }}>
               {genSkeletonLines()}
               <br />
               <Skeleton
                 variant="rectangular"
                 sx={{
-                  height: "20vh",
+                  height: "calc(30vh - 5em)",
                   borderRadius: 1,
                 }}
               />
