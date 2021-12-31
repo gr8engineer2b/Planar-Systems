@@ -5,6 +5,7 @@
   "description": "planar-systems",
   "main": ".webpack/main",
   "scripts": {
+    "preinstall": "npm-force-resolutions",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -62,6 +63,9 @@
       ]
     }
   },
+  "resolutions": {
+    "trim-newlines": "4.0.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
@@ -75,7 +79,9 @@
     "babel-loader": "^8.2.3",
     "css-loader": "^6.5.0",
     "electron": "15.3.0",
+    "json-schema": ">=0.4.0",
     "node-loader": "^2.0.0",
+    "npm-force-resolutions": "^0.0.10",
     "style-loader": "^3.3.1"
   },
   "dependencies": {
