@@ -5,6 +5,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
 import { Box, Button, Dialog, DialogContent, Skeleton } from "@mui/material";
 
+import { BaseObject } from "./Objects/BaseObject";
+
 const myTheme = createTheme({
   palette: {
     mode: "dark",
@@ -35,6 +37,9 @@ const App = () => {
       const res = await window.workspace.choose();
       console.log(res);
       setHasWorkingDirectory(res);
+
+      let obj = new BaseObject("./example.json");
+      obj.saveFile()
     }
   };
 
