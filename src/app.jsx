@@ -5,7 +5,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
 import { Box, Button, Dialog, DialogContent, Skeleton } from "@mui/material";
 
-import { BaseObject } from "./Objects/BaseObject";
+import { Item } from "./Objects/Item";
 
 const myTheme = createTheme({
   palette: {
@@ -35,11 +35,13 @@ const App = () => {
   const chooseDir = async () => {
     if (!hasWorkingDirectory) {
       const res = await window.workspace.choose();
-      console.log(res);
       setHasWorkingDirectory(res);
 
-      let obj = new BaseObject("./example.json");
-      obj.saveFile()
+      let obj = new Item("./example.json", { test: ["list"] }, [
+        { target: "test", type: "object" },
+      ]);
+      obj.validate();
+      console.log(obj.invalid);
     }
   };
 
