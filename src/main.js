@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, session } = require("electron");
+const crypto = require("crypto");
 const { join } = require("path");
 const fs = require("fs");
 
@@ -140,8 +141,31 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools();
 };
 
+nonce = crypto.randomBytes(16).toString("base64");
+
+if (process.defaultApp) {
+  scriptval = "'unsafe-eval'";
+  styleval = "'unsafe-inline'";
+} else {
+  scriptval = `'nonce-${nonce}'`;
+  styleval = `'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-81cVITyjUgT4d5du04QDijucqQ23bP6rflqY6DZs+Rs=' 'sha256-lTNfXrIKCFTK3ALy9loqQ1Orh2If5/OBGelnPprU1e4=' 'sha256-55vlWI+xuVB9s+++Qot4CTKACLskAG81O+sz4wsxjl4='`;
+}
+
+contentPolicy = `default-src 'self'; style-src 'self' ${styleval} http://localhost/ https://fonts.googleapis.com/; script-src ${scriptval} 'self'; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; base-uri 'none'; form-action 'self'; img-src https: data:`;
+
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+  // App must be ready before manipulating session
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        "Content-Security-Policy": [contentPolicy],
+      },
+    });
+  });
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

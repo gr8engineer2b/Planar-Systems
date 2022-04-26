@@ -1,5 +1,3 @@
-import {BaseObject} from './BaseObject'
+import { BaseObject } from "./BaseObject";
 
-class Item extends BaseObject {
-    
-}
+export class Item extends BaseObject {}

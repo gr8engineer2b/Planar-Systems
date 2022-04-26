@@ -7,3 +7,5 @@
 - Basic Markdown Editor
   - File Creation/Naming (Only at top level, soon to change)
   - File Navigation Tree
+
+.dmd is just a .md, rename it if you like :p
