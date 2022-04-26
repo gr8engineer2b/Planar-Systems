@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import ObjectMenu from "./objectmenu.jsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
@@ -137,5 +137,11 @@ const Nav = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
-ReactDOM.render(<Nav />, document.getElementById("navbar"));
+const rootcontainer = document.getElementById("root");
+const navcontainer = document.getElementById("navbar");
+
+const rootdom = ReactDOM.createRoot(rootcontainer);
+const navdom = ReactDOM.createRoot(navcontainer);
+
+rootdom.render(<App />);
+navdom.render(<Nav />);
