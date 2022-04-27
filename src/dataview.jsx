@@ -8,7 +8,7 @@ const DataView = () => {
   ]);
   obj.validate();
   return (
-    <Box padding="3% 5%" width="90%" height="90%">
+    <Box padding="5vh 2.5vw" width="95%" height="90%">
       {obj.name}
     </Box>
   );

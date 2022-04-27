@@ -12,12 +12,12 @@ const ObjectMenu = () => {
       color: "text.primary",
       fontSize: "1.8em",
       textTransform: "capitalize",
-      overflowX: "hidden",
+      overflow: "hidden",
     };
   };
   return (
     <Box height="100%">
-      <Stack spacing={3} padding="3% 5%" width="90%" height="90%">
+      <Stack spacing={3} padding="5vh 2.5vw" width="95%" height="90%">
         <Stack spacing={3} direction="row" height="25%">
           <Button sx={genStyle(deepOrange[700])}>Geography</Button>
           <Button sx={genStyle(deepOrange[700])}>Campaign Builder</Button>

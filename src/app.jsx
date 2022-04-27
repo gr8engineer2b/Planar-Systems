@@ -3,7 +3,14 @@ import ReactDOM from "react-dom/client";
 import ObjectMenu from "./objectmenu.jsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
-import { Box, Button, Dialog, DialogContent, Skeleton } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  Skeleton,
+  Stack,
+} from "@mui/material";
 import DataView from "./dataview.jsx";
 
 const myTheme = createTheme({
@@ -30,9 +37,12 @@ const myTheme = createTheme({
 const App = () => {
   const [hasWorkingDirectory, setHasWorkingDirectory] = useState(false);
   const [devDataOpen, setDevDataOpen] = useState(false);
+  const [skeletonLines, setSkeletonLines] = useState();
 
   useEffect(() => {
     chooseDir();
+    genSkeletonLines();
+    window.addEventListener("resize", () => genSkeletonLines());
   }, []);
 
   const chooseDir = async () => {
@@ -43,12 +53,15 @@ const App = () => {
   };
 
   const genSkeletonLines = () => {
-    let rows = [];
-    const num = (window.innerHeight * 0.7 - 48) / 26;
-    for (let x = 0; x < num; x++) {
-      rows.push(<Skeleton key={x} />);
+    let rows = skeletonLines;
+    if (window.innerHeight) {
+      rows = [];
+      const num = (window.innerHeight * 0.7) / 27 - 1;
+      for (let x = 0; x < num; x++) {
+        rows.push(<Skeleton key={x} />);
+      }
+      setSkeletonLines(rows);
     }
-    return rows;
   };
 
   return (
@@ -69,7 +82,7 @@ const App = () => {
             {hasWorkingDirectory ? (
               <ObjectMenu />
             ) : (
-              <Box height="100%">
+              <Box height="100%" padding={2}>
                 <Dialog open={true} height="20vh">
                   <DialogContent sx={{ padding: 0, backgroundColor: "#111" }}>
                     <Button
@@ -81,37 +94,30 @@ const App = () => {
                     </Button>
                   </DialogContent>
                 </Dialog>
-                <div style={{ padding: "1em" }}>
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{
-                      height: "2em",
-                      borderRadius: 1,
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
+                <Skeleton
+                  component="div"
+                  variant="rectangular"
+                  sx={{
+                    height: "2em",
+                    borderRadius: 1,
+                    marginBottom: 2,
+                  }}
+                />
+                <Skeleton
+                  variant="rectangular"
+                  sx={{
                     width: "25vw",
                     minWidth: "180px",
                     float: "right",
-                    height: "calc(100% - 5em)",
+                    height: "calc(100% - 6em)",
                     padding: "0 1em 1em 0",
+                    borderRadius: 1,
                   }}
-                >
-                  <Skeleton
-                    variant="rectangular"
-                    sx={{
-                      height: "100%",
-                      borderRadius: 1,
-                    }}
-                  />
-                </div>
-                <br />
-                <br />
+                />
+                <div style={{ height: "2.5vh" }} display="block"></div>
                 <div style={{ padding: "1em", display: "flow-root" }}>
-                  {genSkeletonLines()}
-                  <br />
+                  {skeletonLines}
+                  <div style={{ height: "2.5vh" }}></div>
                   <Skeleton
                     variant="rectangular"
                     sx={{
