@@ -56,7 +56,7 @@ const App = () => {
     let rows = skeletonLines;
     if (window.innerHeight) {
       rows = [];
-      const num = (window.innerHeight * 0.7) / 27 - 1;
+      const num = (window.innerHeight * 0.63) / 24 - 1;
       for (let x = 0; x < num; x++) {
         rows.push(<Skeleton key={x} />);
       }
@@ -82,7 +82,7 @@ const App = () => {
             {hasWorkingDirectory ? (
               <ObjectMenu />
             ) : (
-              <Box height="100%" padding={2}>
+              <Box height="100%" padding="1vh 1vw">
                 <Dialog open={true} height="20vh">
                   <DialogContent sx={{ padding: 0, backgroundColor: "#111" }}>
                     <Button
@@ -98,9 +98,9 @@ const App = () => {
                   component="div"
                   variant="rectangular"
                   sx={{
-                    height: "2em",
+                    height: "5vh",
+                    marginBottom: "2vh",
                     borderRadius: 1,
-                    marginBottom: 2,
                   }}
                 />
                 <Skeleton
@@ -109,23 +109,22 @@ const App = () => {
                     width: "25vw",
                     minWidth: "180px",
                     float: "right",
-                    height: "calc(100% - 6em)",
-                    padding: "0 1em 1em 0",
+                    height: "90vh",
+                    marginLeft: "1vw",
                     borderRadius: 1,
                   }}
                 />
-                <div style={{ height: "2.5vh" }} display="block"></div>
-                <div style={{ padding: "1em", display: "flow-root" }}>
+                <Stack sx={{ marginTop: "5vh" }}>
                   {skeletonLines}
-                  <div style={{ height: "2.5vh" }}></div>
                   <Skeleton
                     variant="rectangular"
                     sx={{
-                      height: "calc(30vh - 5em)",
+                      height: "20vh",
+                      marginTop: "4vh",
                       borderRadius: 1,
                     }}
                   />
-                </div>
+                </Stack>
               </Box>
             )}
           </Box>
