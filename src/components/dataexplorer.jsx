@@ -9,7 +9,6 @@ const DataExplorer = () => {
   const [spacing, setSpacing] = useState();
 
   useEffect(() => {
-    chooseDir();
     genSkeletonLines();
     window.addEventListener("resize", () => genSkeletonLines());
   }, []);
