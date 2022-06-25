@@ -113,6 +113,10 @@ const chooseWorkDir = async () => {
   return [!res.canceled, process.env.REACT_APP_WORKING_DIRECTORY];
 };
 
+const setWorkDir = async (path) => {
+  process.env.REACT_APP_WORKING_DIRECTORY = path;
+}
+
 const getWorkDir = () => {
   return process.env.REACT_APP_WORKING_DIRECTORY;
 };
@@ -138,6 +142,9 @@ ipcMain.handle("createDir", (e, directorypath) => {
 ipcMain.handle("chooseWorkDir", (e) => {
   return chooseWorkDir();
 });
+ipcMain.handle("setWorkDir", (e, path) => {
+  return setWorkDir(path);
+})
 ipcMain.handle("readSettings", (e) => {
   return readSettings();
 });

@@ -14,7 +14,7 @@ const DataExplorer = () => {
     const [hasWorkingDirectory, setHasWorkingDirectory] = useState(false);
     const [skeletonLines, setSkeletonLines] = useState();
 
-    useEffect(async () => {
+    useEffect(() => {
         chooseDir();
         genSkeletonLines();
         window.addEventListener("resize", () => genSkeletonLines());
@@ -29,6 +29,7 @@ const DataExplorer = () => {
         await loadSettingsDir();
         if (SettingsService.settings.workspace) {
             setHasWorkingDirectory(true);
+            await window.workspace.set(SettingsService.settings.workspace);
         }
         if (!SettingsService.settings.workspace) {
             const res = await window.workspace.choose();
