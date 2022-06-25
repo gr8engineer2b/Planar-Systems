@@ -4,18 +4,35 @@ const { join } = require("path");
 const fs = require("fs");
 
 const allowlist = [
-  /\.txt$/,
+  /\.dmd$/,
   /\.json$/,
   /^[\w\- !@#$%^&(){}\[\]';+=]+[^\.\s][\w\- !@#$%^&(){}\[\]';+=]+$/, //lengthy way to say match files with plaintext allowed by windows as filenames without extentions
 ];
 
-const ignorelist = [/^Rubbish/];
+const ignorelist = [
+  /^Rubbish/,
+  /^settings\.cfg$/
+];
 let mainWindow;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   // eslint-disable-line global-require
   app.quit();
+}
+
+const readSettings = () => {
+  let userDataPath = app.getPath('userData');
+  if (fs.existsSync(join(userDataPath, 'settings.cfg'))) {
+    return fs.readFileSync(join(userDataPath, 'settings.cfg'), "utf-8");
+  } else {
+    return null;
+  }
+}
+
+const saveSettings = async (data) => {
+  let userDataPath = app.getPath('userData');
+  fs.writeFileSync(join(userDataPath, 'settings.cfg'), data, "utf-8");
 }
 
 const readFile = async (filepath) => {
@@ -88,12 +105,12 @@ const createDir = async (directorypath) => {
 
 const chooseWorkDir = async () => {
   const res = await dialog.showOpenDialog(mainWindow, {
-    properties: ["openDirectory", "createDirectory", "propmtToCreate"],
+    properties: ["openDirectory", "createDirectory"],
   });
   if (res.canceled === false) {
     process.env.REACT_APP_WORKING_DIRECTORY = res.filePaths[0];
   }
-  return !res.canceled;
+  return [!res.canceled, process.env.REACT_APP_WORKING_DIRECTORY];
 };
 
 const getWorkDir = () => {
@@ -120,6 +137,12 @@ ipcMain.handle("createDir", (e, directorypath) => {
 });
 ipcMain.handle("chooseWorkDir", (e) => {
   return chooseWorkDir();
+});
+ipcMain.handle("readSettings", (e) => {
+  return readSettings();
+});
+ipcMain.handle("saveSettings", (e, data) => {
+  return saveSettings(data);
 });
 
 const createWindow = () => {

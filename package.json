@@ -5,7 +5,6 @@
   "description": "planar-systems",
   "main": ".webpack/main",
   "scripts": {
-    "preinstall": "npm-force-resolutions",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -90,11 +89,13 @@
     "@mui/icons-material": "^5.2.5",
     "@mui/lab": "^5.0.0-alpha.58",
     "@mui/material": "^5.6.3",
+    "draft-js": "^0.11.7",
     "electron-squirrel-startup": "^1.0.0",
     "markdown-draft-js": "^2.4.0",
     "react": "<=18.0.0",
     "react-dom": "^18.0.0",
     "react-draft-wysiwyg": "^1.14.7",
+    "react-router-dom": "^6.3.0",
     "uuid": "^8.3.2"
   }
 }

@@ -1,7 +1,7 @@
 import { Paper, Box, Switch, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Character from "./character.jsx";
-import Item from "./item.jsx";
+import Item from "./Item.jsx";
 
 const Preview = (props) => {
   const [previews, setPreviews] = useState([]);

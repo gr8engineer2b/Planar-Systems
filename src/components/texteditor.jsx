@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "react-draft-wysiwyg";
-import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { draftToMarkdown, markdownToDraft } from "markdown-draft-js";
 import {
   convertToRaw,

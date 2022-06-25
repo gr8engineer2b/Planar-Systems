@@ -9,6 +9,8 @@ contextBridge.exposeInMainWorld("fs", {
   rename: (filepath, newfilepath, overwrite) =>
     ipcRenderer.invoke("rename", [filepath, newfilepath, overwrite]),
   createDir: (directorypath) => ipcRenderer.invoke("createDir", directorypath),
+  readSettings: () => ipcRenderer.invoke("readSettings"),
+  saveSettings: (data) => ipcRenderer.invoke("saveSettings", data),
 });
 
 contextBridge.exposeInMainWorld("workspace", {

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
-import { Item } from "./Objects/Item";
+import { Item } from "../Objects/Item";
 
 const DataView = () => {
   let obj = new Item("./example.json", { test: ["list"] }, [
