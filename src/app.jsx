@@ -4,8 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Router from "./components/router.jsx"
-import SettingsService from "./services/SettingsService.js";
+import Router from "./components/router.jsx";
 
 const myTheme = createTheme({
   palette: {
@@ -29,9 +28,6 @@ const myTheme = createTheme({
 });
 
 const App = () => {
-
-  
-
   return (
     <ThemeProvider theme={myTheme}>
       <CssBaseline />
