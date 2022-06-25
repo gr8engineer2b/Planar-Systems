@@ -9,10 +9,7 @@ const allowlist = [
   /^[\w\- !@#$%^&(){}\[\]';+=]+[^\.\s][\w\- !@#$%^&(){}\[\]';+=]+$/, //lengthy way to say match files with plaintext allowed by windows as filenames without extentions
 ];
 
-const ignorelist = [
-  /^Rubbish/,
-  /^settings\.cfg$/
-];
+const ignorelist = [/^Rubbish/, /^settings\.cfg$/];
 let mainWindow;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -22,18 +19,17 @@ if (require("electron-squirrel-startup")) {
 }
 
 const readSettings = () => {
-  let userDataPath = app.getPath('userData');
-  if (fs.existsSync(join(userDataPath, 'settings.cfg'))) {
-    return fs.readFileSync(join(userDataPath, 'settings.cfg'), "utf-8");
-  } else {
-    return null;
+  let userDataPath = app.getPath("userData");
+  if (!fs.existsSync(join(userDataPath, "settings.cfg"))) {
+    fs.writeFileSync(join(userDataPath, "settings.cfg"), JSON.stringify({}));
   }
-}
+  return fs.readFileSync(join(userDataPath, "settings.cfg"), "utf-8");
+};
 
 const saveSettings = async (data) => {
-  let userDataPath = app.getPath('userData');
-  fs.writeFileSync(join(userDataPath, 'settings.cfg'), data, "utf-8");
-}
+  let userDataPath = app.getPath("userData");
+  fs.writeFileSync(join(userDataPath, "settings.cfg"), data, "utf-8");
+};
 
 const readFile = async (filepath) => {
   const workingdir = getWorkDir();
@@ -115,7 +111,7 @@ const chooseWorkDir = async () => {
 
 const setWorkDir = async (path) => {
   process.env.REACT_APP_WORKING_DIRECTORY = path;
-}
+};
 
 const getWorkDir = () => {
   return process.env.REACT_APP_WORKING_DIRECTORY;
@@ -144,7 +140,7 @@ ipcMain.handle("chooseWorkDir", (e) => {
 });
 ipcMain.handle("setWorkDir", (e, path) => {
   return setWorkDir(path);
-})
+});
 ipcMain.handle("readSettings", (e) => {
   return readSettings();
 });
