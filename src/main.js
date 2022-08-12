@@ -32,70 +32,96 @@ const saveSettings = async (data) => {
 };
 
 const readFile = async (filepath) => {
-  const workingdir = getWorkDir();
-  if (fs.existsSync(join(workingdir, filepath))) {
-    return fs.readFileSync(join(workingdir, filepath), "utf-8");
+  if (fs.existsSync(join(process.env.REACT_APP_WORKING_DIRECTORY, filepath))) {
+    return fs.readFileSync(
+      join(process.env.REACT_APP_WORKING_DIRECTORY, filepath),
+      "utf-8"
+    );
   } else {
     return null;
   }
 };
 
 const readDir = async (directorypath) => {
-  const workingdir = getWorkDir();
-  if (fs.existsSync(join(workingdir, directorypath))) {
-    if (fs.statSync(join(workingdir, directorypath)).isDirectory()) {
-      return fs.readdirSync(join(workingdir, directorypath)).map((file) => {
-        if (
-          allowlist
-            .map((exp) => {
-              return exp.test(file);
-            })
-            .includes(true) &&
-          !ignorelist
-            .map((exp) => {
-              return exp.test(file);
-            })
-            .includes(true)
-        ) {
-          return {
-            name: file,
-            isDir: fs
-              .statSync(join(workingdir, directorypath, file))
-              .isDirectory(),
-            children: [],
-          };
-        }
-      });
+  if (
+    fs.existsSync(join(process.env.REACT_APP_WORKING_DIRECTORY, directorypath))
+  ) {
+    if (
+      fs
+        .statSync(join(process.env.REACT_APP_WORKING_DIRECTORY, directorypath))
+        .isDirectory()
+    ) {
+      return fs
+        .readdirSync(
+          join(process.env.REACT_APP_WORKING_DIRECTORY, directorypath)
+        )
+        .map((file) => {
+          if (
+            allowlist
+              .map((exp) => {
+                return exp.test(file);
+              })
+              .includes(true) &&
+            !ignorelist
+              .map((exp) => {
+                return exp.test(file);
+              })
+              .includes(true)
+          ) {
+            return {
+              name: file,
+              isDir: fs
+                .statSync(
+                  join(
+                    process.env.REACT_APP_WORKING_DIRECTORY,
+                    directorypath,
+                    file
+                  )
+                )
+                .isDirectory(),
+              children: [],
+            };
+          }
+        });
     }
   }
 };
 
 const writeFile = async (filepath, data) => {
-  const workingdir = getWorkDir();
-  fs.writeFileSync(join(workingdir, filepath), data, "utf-8");
+  fs.writeFileSync(
+    join(process.env.REACT_APP_WORKING_DIRECTORY, filepath),
+    data,
+    "utf-8"
+  );
 };
 
 const removeFile = async (filepath) => {
-  const workingdir = getWorkDir();
-  if (fs.existsSync(join(workingdir, filepath))) {
-    fs.unlinkSync(join(workingdir, filepath));
+  if (fs.existsSync(join(process.env.REACT_APP_WORKING_DIRECTORY, filepath))) {
+    fs.unlinkSync(join(process.env.REACT_APP_WORKING_DIRECTORY, filepath));
   }
 };
 
 const rename = async (filepath, newfilepath, overwrite) => {
-  const workingdir = getWorkDir();
-  const oldexists = fs.existsSync(join(workingdir, filepath));
-  const newdoesnotexist = !fs.existsSync(join(workingdir, newfilepath));
+  const oldexists = fs.existsSync(
+    join(process.env.REACT_APP_WORKING_DIRECTORY, filepath)
+  );
+  const newdoesnotexist = !fs.existsSync(
+    join(process.env.REACT_APP_WORKING_DIRECTORY, newfilepath)
+  );
   // ensuring file exists to be renamed and that the file it will become does not
   if (oldexists && (newdoesnotexist || overwrite)) {
-    fs.renameSync(join(workingdir, filepath), join(workingdir, newfilepath));
+    fs.renameSync(
+      join(process.env.REACT_APP_WORKING_DIRECTORY, filepath),
+      join(process.env.REACT_APP_WORKING_DIRECTORY, newfilepath)
+    );
   }
 };
 
 const createDir = async (directorypath) => {
-  const workingdir = getWorkDir();
-  if (!fs.existsSync(join(workingdir, directorypath))) {
-    fs.mkdirSync(join(workingdir, directorypath));
+  if (
+    !fs.existsSync(join(process.env.REACT_APP_WORKING_DIRECTORY, directorypath))
+  ) {
+    fs.mkdirSync(join(process.env.REACT_APP_WORKING_DIRECTORY, directorypath));
   }
 };
 
@@ -106,15 +132,7 @@ const chooseWorkDir = async () => {
   if (res.canceled === false) {
     process.env.REACT_APP_WORKING_DIRECTORY = res.filePaths[0];
   }
-  return [!res.canceled, process.env.REACT_APP_WORKING_DIRECTORY];
-};
-
-const setWorkDir = async (path) => {
-  process.env.REACT_APP_WORKING_DIRECTORY = path;
-};
-
-const getWorkDir = () => {
-  return process.env.REACT_APP_WORKING_DIRECTORY;
+  return [!res.canceled, process.env.res.filePaths[0]];
 };
 
 ipcMain.handle("readFile", (e, filepath) => {
@@ -137,9 +155,6 @@ ipcMain.handle("createDir", (e, directorypath) => {
 });
 ipcMain.handle("chooseWorkDir", (e) => {
   return chooseWorkDir();
-});
-ipcMain.handle("setWorkDir", (e, path) => {
-  return setWorkDir(path);
 });
 ipcMain.handle("readSettings", (e) => {
   return readSettings();

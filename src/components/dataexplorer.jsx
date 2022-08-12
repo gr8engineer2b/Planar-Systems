@@ -11,25 +11,21 @@ const DataExplorer = () => {
   useEffect(() => {
     genSkeletonLines();
     window.addEventListener("resize", () => genSkeletonLines());
+    loadSettings();
   }, []);
 
-  const loadSettingsDir = async () => {
+  const loadSettings = async () => {
     await SettingsService.loadSettings();
-    console.log(SettingsService.settings);
+    if (SettingsService.settings.hasOwnProperty("workspace")) {
+      setHasWorkingDirectory(true);
+    }
   };
 
   const chooseDir = async () => {
-    await loadSettingsDir();
-    if (SettingsService.settings.hasOwnProperty("workspace")) {
-      setHasWorkingDirectory(true);
-      await window.workspace.set(SettingsService.settings.workspace);
-    } // ? Is there a reason for not using else
-    if (!SettingsService.settings.hasOwnProperty("workspace")) {
-      const res = await window.workspace.choose();
-      setHasWorkingDirectory(res[0]);
-      SettingsService.settings.workspace = res[1];
-      SettingsService.saveSettings();
-    }
+    const res = await window.workspace.choose();
+    setHasWorkingDirectory(res[0]);
+    SettingsService.settings.workspace = res[1];
+    SettingsService.saveSettings();
   };
 
   const genSkeletonLines = () => {

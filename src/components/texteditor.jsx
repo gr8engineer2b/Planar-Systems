@@ -25,7 +25,6 @@ import SaveIcon from "@mui/icons-material/Save";
 const SaveButton = (props) => {
   const [namePrompt, setNamePrompt] = useState(false);
   const [newFilepath, setNewFilepath] = useState();
-  // ToDo: implement choosing directory location
 
   const saveHandler = async (filepath) => {
     filepath = filepath ? filepath : props.filepath;
@@ -162,7 +161,7 @@ const TextEditor = (props) => {
   const tabHandler = (event) => {
     event.preventDefault(); // prevents tabbing to next indexable element, this is required despite docs claiming otherwise, feel free to test at any point
     // handle tab logic for general editor indentation
-    const tabValue = "  "; //two space tab ToDo: add option for other tab values
+    const tabValue = "  "; //two space tab // ToDo: add option for other tab values
     const contentState = editorState.getCurrentContent();
     const selection = editorState.getSelection();
     const endKey = selection.getEndKey();

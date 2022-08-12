@@ -436,7 +436,7 @@ const FileNavTree = (props) => {
           }
         }}
       >
-        {generateTree(view)}
+        {view ? generateTree(view) : "Choose Dir"}
       </TreeView>
       <br />
     </Box>
