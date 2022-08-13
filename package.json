@@ -1,7 +1,7 @@
 {
   "name": "planar-systems",
   "productName": "planar-systems",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "planar-systems",
   "main": ".webpack/main",
   "scripts": {
@@ -53,7 +53,10 @@
                 {
                   "html": "./src/index.html",
                   "js": "./src/renderer.js",
-                  "name": "main_window"
+                  "name": "main_window",
+                  "preload": {
+                    "js": "./src/preload.js"
+                  }
                 }
               ]
             }
@@ -63,21 +66,22 @@
     }
   },
   "resolutions": {
-    "trim-newlines": "4.0.1"
+    "trim-newlines": "4.0.2",
+    "got": "11.8.5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
-    "@electron-forge/cli": "^6.0.0-beta.61",
-    "@electron-forge/maker-deb": "^6.0.0-beta.61",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.61",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
-    "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
-    "@vercel/webpack-asset-relocator-loader": "^1.7.0",
-    "babel-loader": "^8.2.3",
-    "css-loader": "^6.5.0",
-    "electron": "^18.1.0",
+    "@electron-forge/cli": "^6.0.0-beta.65",
+    "@electron-forge/maker-deb": "^6.0.0-beta.65",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.65",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.65",
+    "@electron-forge/maker-zip": "^6.0.0-beta.65",
+    "@electron-forge/plugin-webpack": "^6.0.0-beta.65",
+    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
+    "babel-loader": "^8.2.5",
+    "css-loader": "^6.7.1",
+    "electron": "^20.0.2",
     "json-schema": ">=0.4.0",
     "node-loader": "^2.0.0",
     "npm-force-resolutions": "^0.0.10",
@@ -91,11 +95,11 @@
     "@mui/material": "^5.6.3",
     "draft-js": "^0.11.7",
     "electron-squirrel-startup": "^1.0.0",
+    "immutable": "^4.1.0",
     "markdown-draft-js": "^2.4.0",
-    "react": "<=18.0.0",
+    "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-draft-wysiwyg": "^1.14.7",
-    "react-router-dom": "^6.3.0",
-    "uuid": "^8.3.2"
+    "react-router-dom": "^6.3.0"
   }
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { blue, deepPurple } from "@mui/material/colors";
-import CssBaseline from '@mui/material/CssBaseline';
+import CssBaseline from "@mui/material/CssBaseline";
 
 import Router from "./components/router.jsx";
 
@@ -31,10 +31,10 @@ const App = () => {
   return (
     <ThemeProvider theme={myTheme}>
       <CssBaseline />
-      <Router/>
+      <Router />
     </ThemeProvider>
-  )
-}
+  );
+};
 
 const rootcontainer = document.getElementById("root");
 
