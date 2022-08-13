@@ -132,7 +132,7 @@ const chooseWorkDir = async () => {
   if (res.canceled === false) {
     process.env.REACT_APP_WORKING_DIRECTORY = res.filePaths[0];
   }
-  return [!res.canceled, process.env.res.filePaths[0]];
+  return [!res.canceled, res.filePaths[0]];
 };
 
 ipcMain.handle("readFile", (e, filepath) => {
