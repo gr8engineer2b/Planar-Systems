@@ -11,7 +11,7 @@ const ItemButton = (props) => {
       width: "100%",
       color: "text.primary",
       fontSize: "1.8em",
-      textTransform: "capitalize",
+      textTransform: "none",
       overflow: "hidden",
     };
   };
@@ -68,7 +68,7 @@ const Folder = (props) => {
   }, [items]);
 
   return (
-    <Grid container spacing={2} padding="5vh 2.5vw" width="95%" height="90%">
+    <Grid container spacing={2} padding="5vh 2.5vw" marginTop={0}>
       {!props.top ? (
         <Grid item xs={3} height="25%" key={crypto.randomUUID()}>
           <ItemButton
@@ -84,8 +84,14 @@ const Folder = (props) => {
       )}
       {items
         ? items.map((item) => {
+            if (item == undefined) return;
             return (
-              <Grid item xs={3} height="25%" key={crypto.randomUUID()}>
+              <Grid
+                item
+                xs={3}
+                height="calc(85vh / 4)"
+                key={crypto.randomUUID()}
+              >
                 <ItemButton
                   {...item}
                   prev={props}
@@ -106,13 +112,27 @@ const ObjectView = (props) => {
   const [item, setItem] = useState(props.item);
 
   useEffect(() => {
-    if (!props.item) {
+    if (!props.name) {
       return;
     }
-    window.fs.readFile(props.item).then((data) => setItem(data));
+    window.fs.readFile(props.path + props.name).then((data) => {
+      setItem(JSON.parse(data));
+    });
   }, []);
 
-  return item ? item : <Button>Make Something!</Button>;
+  return (
+    <Grid container spacing={2} padding="5vh 2.5vw" marginTop={0}>
+      {item
+        ? Object.entries(item).map((prop) => {
+            return (
+              <Grid key={crypto.randomUUID()}>
+                {prop[0]} = {prop[1]}
+              </Grid>
+            );
+          })
+        : "No Data"}
+    </Grid>
+  );
 };
 
 const ObjectMenu = () => {
