@@ -2,7 +2,6 @@ import { Button, Box } from "@mui/material";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SettingsService from "../services/SettingsService";
-import DataExplorer from "./dataexplorer.jsx";
 
 const loadSettings = async () => {
   await SettingsService.loadSettings();
@@ -11,7 +10,6 @@ const loadSettings = async () => {
 const NavBar = () => {
   useEffect(() => {
     loadSettings();
-    console.log(SettingsService);
   }, []);
 
   return (
@@ -27,7 +25,6 @@ const NavBar = () => {
           }
         }}
         variant="contained"
-        render={<DataExplorer uuid={crypto.randomUUID()} />}
       >
         Reset Directory
       </Button>

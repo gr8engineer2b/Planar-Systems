@@ -16,7 +16,7 @@
     "name": "gr8enginer2b",
     "email": "gr8engineer2b@gmail.com"
   },
-  "license": "MIT",
+  "license": "GNU GPLv3",
   "config": {
     "forge": {
       "packagerConfig": {},
