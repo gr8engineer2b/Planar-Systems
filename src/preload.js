@@ -15,5 +15,5 @@ contextBridge.exposeInMainWorld("fs", {
 
 contextBridge.exposeInMainWorld("workspace", {
   choose: () => ipcRenderer.invoke("chooseWorkDir"),
-  set: (path) => ipcRenderer.invoke("setWorkDir", path),
+  set: (directorypath) => ipcRenderer.invoke("setWorkDir", directorypath),
 });

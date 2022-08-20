@@ -130,9 +130,15 @@ const chooseWorkDir = async () => {
     properties: ["openDirectory", "createDirectory"],
   });
   if (res.canceled === false) {
-    process.env.REACT_APP_WORKING_DIRECTORY = res.filePaths[0];
+    setWorkDir(res.filePaths[0]);
   }
   return [!res.canceled, res.filePaths[0]];
+};
+
+const setWorkDir = async (directorypath) => {
+  if (fs.existsSync(join(directorypath))) {
+    process.env.REACT_APP_WORKING_DIRECTORY = directorypath;
+  }
 };
 
 ipcMain.handle("readFile", (e, filepath) => {
@@ -155,6 +161,9 @@ ipcMain.handle("createDir", (e, directorypath) => {
 });
 ipcMain.handle("chooseWorkDir", (e) => {
   return chooseWorkDir();
+});
+ipcMain.handle("setWorkDir", (e, directorypath) => {
+  return setWorkDir(directorypath);
 });
 ipcMain.handle("readSettings", (e) => {
   return readSettings();

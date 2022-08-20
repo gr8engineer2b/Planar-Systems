@@ -55,7 +55,7 @@ const Folder = (props) => {
   const getFolderData = async () => {
     if (props.top) {
       setItems(props.top);
-      if (items) items.map((item) => window.fs.createDir(item.name));
+      if (props.top) props.top.map((item) => window.fs.createDir(item.name));
     } else {
       window.fs.readDir(props.path + props.name).then((data) => {
         if (JSON.stringify(items) !== JSON.stringify(data)) setItems(data);
@@ -70,7 +70,7 @@ const Folder = (props) => {
   return (
     <Grid container spacing={2} padding="5vh 2.5vw" marginTop={0}>
       {!props.top ? (
-        <Grid item xs={3} height="25%" key={crypto.randomUUID()}>
+        <Grid item xs={3} height="calc(85vh / 4)" key={crypto.randomUUID()}>
           <ItemButton
             back
             name="Back"

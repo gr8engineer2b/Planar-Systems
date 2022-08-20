@@ -17,6 +17,7 @@ const DataExplorer = () => {
   const loadSettings = async () => {
     await SettingsService.loadSettings();
     if (SettingsService.settings.hasOwnProperty("workspace")) {
+      window.workspace.set(SettingsService.settings.workspace);
       setHasWorkingDirectory(true);
     }
   };
