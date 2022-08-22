@@ -2,7 +2,54 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Grid } from "@mui/material";
 import { red, orange, pink, deepOrange, green } from "@mui/material/colors";
 
-const ItemButton = (props) => {
+const ObjectNav = (props) => {
+  const sty = (color) => {
+    return {
+      backgroundColor: color,
+      textAlign: "center",
+      height: "100%",
+      width: "100%",
+      color: "text.primary",
+      fontSize: "1em",
+      textTransform: "none",
+      overflow: "hidden",
+    };
+  };
+
+  return (
+    <Grid
+      container
+      spacing={1}
+      width="calc(100% - 4vh)"
+      height="5vh"
+      margin="0 2vh"
+    >
+      {props.isTop ? (
+        <Grid item xs={1} />
+      ) : (
+        <Grid item xs={1} height="100%" padding={1} key={crypto.randomUUID()}>
+          <Button
+            onClick={() => {
+              props.prevView();
+              props.setItems();
+            }}
+            sx={sty(green[700])}
+          >
+            Back
+          </Button>
+        </Grid>
+      )}
+      <Grid item xs={10} />
+      <Grid item xs={1} height="100%" padding={1} key={crypto.randomUUID()}>
+        <Button onClick={() => {}} sx={sty(green[700])}>
+          New
+        </Button>
+      </Grid>
+    </Grid>
+  );
+};
+
+const ObjectButton = (props) => {
   const sty = (color) => {
     return {
       backgroundColor: color,
@@ -21,18 +68,6 @@ const ItemButton = (props) => {
       <Button
         onClick={() => {
           props.setViewData(props);
-          props.setItems();
-        }}
-        sx={sty(props.color)}
-      >
-        {props.name}
-      </Button>
-    );
-  } else if (props.back) {
-    return (
-      <Button
-        onClick={() => {
-          props.prevView();
           props.setItems();
         }}
         sx={sty(props.color)}
@@ -68,43 +103,37 @@ const Folder = (props) => {
   }, [items]);
 
   return (
-    <Grid container spacing={2} padding="5vh 2.5vw" marginTop={0}>
-      {!props.top ? (
-        <Grid item xs={3} height="calc(85vh / 4)" key={crypto.randomUUID()}>
-          <ItemButton
-            back
-            name="Back"
-            color={green[700]}
-            prevView={props.prevView}
-            setItems={setItems}
-          />
-        </Grid>
-      ) : (
-        <></>
-      )}
-      {items
-        ? items.map((item) => {
-            if (item == undefined) return;
-            return (
-              <Grid
-                item
-                xs={3}
-                height="calc(85vh / 4)"
-                key={crypto.randomUUID()}
-              >
-                <ItemButton
-                  {...item}
-                  prev={props}
-                  path={props.path + props.name + "/"}
-                  color={props.color ? props.color : item.color}
-                  setViewData={props.setViewData}
-                  setItems={setItems}
-                />
-              </Grid>
-            );
-          })
-        : ""}
-    </Grid>
+    <>
+      <ObjectNav
+        setItems={setItems}
+        prevView={props.prevView}
+        isTop={props.top ? true : false}
+      />
+      <Grid container spacing={2} padding="0 2.5vw 5vh 2.5vw" marginTop={0}>
+        {items
+          ? items.map((item) => {
+              if (item == undefined) return;
+              return (
+                <Grid
+                  item
+                  xs={3}
+                  height="calc(85vh / 4)"
+                  key={crypto.randomUUID()}
+                >
+                  <ObjectButton
+                    {...item}
+                    prev={props}
+                    path={props.path + props.name + "/"}
+                    color={props.color ? props.color : item.color}
+                    setViewData={props.setViewData}
+                    setItems={setItems}
+                  />
+                </Grid>
+              );
+            })
+          : ""}
+      </Grid>
+    </>
   );
 };
 
