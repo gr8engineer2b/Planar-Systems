@@ -1,13 +1,13 @@
 import React, { useState } from "react-is";
 
-const jsonEditor = () => {
+const jsonEditor = (props) => {
   const [editorError, setEditorError] = useState();
 
   return (
     <div>
       {/* editor logic placeholder */}
       <Preview
-        data={editorState.getCurrentContent().getPlainText()}
+        data={props.data}
         filepath={props.filepath}
         updateEditorError={updateEditorError}
       />
@@ -15,14 +15,10 @@ const jsonEditor = () => {
       {editorError !== undefined && (
         <Tooltip title={editorError}>
           <Alert
-            sx={
-              windowIsSmall()
-                ? { display: "inline-block", width: "22px", height: "38px" }
-                : {}
-            }
+            sx={{ display: "inline-block", width: "22px", height: "38px" }}
             severity="error"
           >
-            {windowIsSmall() ? "" : editorError}
+            {editorError}
           </Alert>
         </Tooltip>
       )}

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
-import FileNavTree from "./filenavtree.jsx";
+import NavTree from "./navtree.jsx";
 
 const InfoPanel = (props) => {
   return (
@@ -9,7 +9,7 @@ const InfoPanel = (props) => {
         height: "100%",
       }}
     >
-      <FileNavTree
+      <NavTree
         newTabHandler={props.newTabHandler}
         refreshPeriod={2} // int - in seconds
       />

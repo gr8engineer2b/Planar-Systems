@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import TextEditor from "./texteditor.jsx";
-import InfoPanel from "./infopanel.jsx";
+import InfoPanel from "./sidepanel.jsx";
+import AppTab from "./apptab.jsx";
 import { Tabs, Tab, Box, IconButton, Button, Tooltip } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
+import CloseIcon from "@mui/icons-material/Close";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -32,14 +32,14 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
+const a11yProps = (index) => {
   return {
     id: `tab-${index}`,
     "aria-controls": `tabpanel-${index}`,
   };
-}
+};
 
-const AppTabs = (props) => {
+const TabBar = ({ hasWorkingDirectory }) => {
   const [value, setValue] = useState(99999);
   const [tabEditorStates, setTabEditorStates] = useState({});
   const [tabs, setTabs] = useState([]);
@@ -103,7 +103,7 @@ const AppTabs = (props) => {
     });
   };
 
-  const removeTab = (index) => {
+  const removeTabHandler = (index) => {
     let newTabs = [];
     let newIndex = index;
     if (index !== undefined) {
@@ -138,6 +138,24 @@ const AppTabs = (props) => {
     }
   };
 
+  const parseFilepath = (filepath, trunclen) => {
+    const path = filepath.slice(0, filepath.lastIndexOf("/"));
+    let filename = filepath.slice(
+      filepath.lastIndexOf("/") + 1,
+      filepath.length
+    );
+    if (trunclen === undefined) trunclen = 10;
+    const extention = filename.slice(
+      ((filename.lastIndexOf(".") - 1) >>> 0) + 2
+    );
+    filename = filename.slice(0, -extention.length - 1);
+    const trunc =
+      filename.length > trunclen
+        ? filename.slice(0, trunclen - 2) + ".."
+        : filename;
+    return [path, trunc, extention, filename];
+  };
+
   const nameFileHandler = (uuid, filepath) => {
     const tabmatch = tabs.filter((tab) => {
       return tab.uuid === uuid;
@@ -155,24 +173,6 @@ const AppTabs = (props) => {
         },
       ]);
     }
-  };
-
-  const parseFilepath = (filepath, trunclen) => {
-    const path = filepath.slice(0, filepath.lastIndexOf("/"));
-    let filename = filepath.slice(
-      filepath.lastIndexOf("/") + 1,
-      filepath.length
-    );
-    if (trunclen === undefined) trunclen = 10;
-    const extention = filename.slice(
-      ((filename.lastIndexOf(".") - 1) >>> 0) + 2
-    );
-    filename = filename.slice(0, -extention.length - 1);
-    const trunc =
-      filename.length > trunclen
-        ? filename.slice(0, trunclen - 2) + ".."
-        : filename;
-    return [path, trunc, extention, filename];
   };
 
   return (
@@ -210,7 +210,7 @@ const AppTabs = (props) => {
             onChange={changeTabHandler}
             sx={{ borderBottom: "1px solid #222" }}
           >
-            {tabs.map(({ filepath, index, uuid }) => (
+            {tabs.map(({ index, filepath, uuid }) => (
               <Tab
                 component="div"
                 className="tabstyle"
@@ -235,7 +235,7 @@ const AppTabs = (props) => {
                       key={"remove-" + index}
                       onClick={(event) => {
                         event.stopPropagation();
-                        removeTab(index);
+                        removeTabHandler(index);
                       }}
                       sx={{
                         display: "inline-flex",
@@ -281,12 +281,11 @@ const AppTabs = (props) => {
         </Box>
         {tabs.map(({ index, filepath, uuid }) => (
           <TabPanel key={uuid} value={value} index={index}>
-            <TextEditor
-              filepath={filepath}
-              uuid={uuid}
+            <AppTab
               editorChangeHandler={editorChangeHandler}
-              editorState={tabEditorStates[uuid]}
               nameFileHandler={nameFileHandler}
+              state={tabEditorStates[uuid]}
+              hasWorkingDirectory={hasWorkingDirectory}
             />
           </TabPanel>
         ))}
@@ -300,7 +299,7 @@ const AppTabs = (props) => {
             color="success"
             variant="outlined"
           >
-            Create New Tab
+            Add Tab
           </Button>
         </TabPanel>
       </div>
@@ -308,4 +307,4 @@ const AppTabs = (props) => {
   );
 };
 
-export default AppTabs;
+export default TabBar;

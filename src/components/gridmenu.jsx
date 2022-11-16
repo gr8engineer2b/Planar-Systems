@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Grid } from "@mui/material";
 import { red, orange, pink, deepOrange, green } from "@mui/material/colors";
+import Item from "./item.jsx";
 
 const ObjectNav = (props) => {
   const sty = (color) => {
@@ -145,26 +146,22 @@ const ObjectView = (props) => {
       return;
     }
     window.fs.readFile(props.path + props.name).then((data) => {
-      setItem(JSON.parse(data));
+      if (data) {
+        setItem({ ...item, ...JSON.parse(data) });
+      }
     });
   }, []);
 
   return (
     <Grid container spacing={2} padding="5vh 2.5vw" marginTop={0}>
-      {item
-        ? Object.entries(item).map((prop) => {
-            return (
-              <Grid key={crypto.randomUUID()}>
-                {prop[0]} = {prop[1]}
-              </Grid>
-            );
-          })
-        : "No Data"}
+      <Grid key={crypto.randomUUID()}>
+        <Item item={item} />
+      </Grid>
     </Grid>
   );
 };
 
-const ObjectMenu = () => {
+const GridMenu = () => {
   const [viewData, setViewData] = useState({});
 
   const topView = () => {
@@ -217,4 +214,4 @@ const ObjectMenu = () => {
   );
 };
 
-export default ObjectMenu;
+export default GridMenu;

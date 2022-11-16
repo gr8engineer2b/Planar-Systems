@@ -1,11 +1,10 @@
 import { Box } from "@mui/material";
 import React from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import DataExplorer from "./dataexplorer.jsx";
-import AppTabs from "./apptabs.jsx";
 import NavBar from "./navbar.jsx";
+import TabBar from "./tabbar.jsx";
 
-const Router = () => {
+const Router = ({ hasWorkingDirectory }) => {
   return (
     <HashRouter>
       <Box
@@ -16,8 +15,10 @@ const Router = () => {
       >
         <NavBar />
         <Routes>
-          <Route path="/" element={<DataExplorer />} />
-          <Route path="/editors" element={<AppTabs />} />
+          <Route
+            path="/"
+            element={<TabBar hasWorkingDirectory={hasWorkingDirectory} />}
+          />
           <Route render={() => <Redirect to="/" />} />
         </Routes>
       </Box>

@@ -70,7 +70,7 @@ const FileMenu = (props) => {
   );
 };
 
-const FileNavTree = (props) => {
+const NavTree = (props) => {
   const [overwritePrompt, setOverwritePrompt] = useState(false);
   const [fileState, setFileState] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
@@ -108,7 +108,7 @@ const FileNavTree = (props) => {
   }, [view, renameFile, anchorEl]);
 
   const getFileStructureData = async (localpath) => {
-    localpath = localpath ? localpath : "";
+    localpath = localpath !== undefined ? localpath : "";
     const data = await window.fs.readDir(localpath);
     if (data) {
       let filelist = [];
@@ -443,4 +443,4 @@ const FileNavTree = (props) => {
   );
 };
 
-export default FileNavTree;
+export default NavTree;

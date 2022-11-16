@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import React from "react";
 import { Item } from "../Objects/Item";
 
-const DataView = () => {
+const DataViewer = () => {
   let obj = new Item("./example.json", { test: ["list"] }, [
     { target: "test", type: "object" },
   ]);
@@ -14,4 +14,4 @@ const DataView = () => {
   );
 };
 
-export default DataView;
+export default DataViewer;
